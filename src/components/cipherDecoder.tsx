@@ -544,9 +544,21 @@ export function CipherDecoder() {
                 <button className="action-button reset" onClick={handleResetMapping}>
                   Reset
                 </button>
-                <button className="action-button" onClick={handleNewMessage}>
-                  Next Message
+                <button className="action-button code" onClick={toggleCodeInput}>
+                  {showCodeInput ? "Cancel" : "Enter Code"}
                 </button>
+                {showCodeInput && (
+                  <input 
+                    ref={codeInputRef}
+                    type="text" 
+                    placeholder="Code" 
+                    className="code-input integrated"
+                    value={codeInputValue}
+                    onChange={handleCodeInputChange}
+                    onKeyDown={handleCodeInputKeyDown}
+                    maxLength={4}
+                  />
+                )}
               </div>
               
               <div className="alphabet">
@@ -575,21 +587,9 @@ export function CipherDecoder() {
               </div>
 
               <div className="keyboard-buttons right-side">
-                <button className="action-button code" onClick={toggleCodeInput}>
-                  {showCodeInput ? "Cancel" : "Enter Code"}
+                <button className="action-button" onClick={handleNewMessage}>
+                  Next Message
                 </button>
-                {showCodeInput && (
-                  <input 
-                    ref={codeInputRef}
-                    type="text" 
-                    placeholder="Code" 
-                    className="code-input integrated"
-                    value={codeInputValue}
-                    onChange={handleCodeInputChange}
-                    onKeyDown={handleCodeInputKeyDown}
-                    maxLength={4}
-                  />
-                )}
               </div>
             </div>
           </div>
