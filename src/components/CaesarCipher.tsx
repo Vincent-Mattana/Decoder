@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import './CaesarCipher.css';
 
@@ -73,6 +73,11 @@ export function CaesarCipher() {
   const [isDecoded, setIsDecoded] = useState(false);
   const [firstInteraction, setFirstInteraction] = useState(true);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Compute which letters are already used in the mapping
+  const usedLetters = useMemo(() => {
+    return Object.values(mapping);
+  }, [mapping]);
 
   const getAtbashChar = (char: string): string => {
     if (char === ' ') return ' ';
@@ -260,16 +265,23 @@ export function CaesarCipher() {
 
       <div className="controls">
         <div className="alphabet">
-          {ALPHABET.split('').map(letter => (
-            <button
-              key={letter}
-              className={`letter-button ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} ${selectedLetter ? 'choose-me' : ''}`}
-              onClick={() => handleReplacementSelect(letter)}
-              disabled={!selectedLetter}
-            >
-              {letter}
-            </button>
-          ))}
+          {ALPHABET.split('').map(letter => {
+            const isUsed = usedLetters.includes(letter);
+            return (
+              <button
+                key={letter}
+                className={`letter-button 
+                  ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
+                  ${selectedLetter ? 'choose-me' : ''} 
+                  ${isUsed ? 'used' : ''}`}
+                onClick={() => handleReplacementSelect(letter)}
+                disabled={!selectedLetter || isUsed}
+              >
+                {letter}
+                {isUsed && <span className="letter-used-indicator">✕</span>}
+              </button>
+            );
+          })}
         </div>
 
         <button className="new-message" onClick={handleNewMessage}>
