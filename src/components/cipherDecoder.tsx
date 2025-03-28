@@ -146,6 +146,7 @@ export function CipherDecoder() {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState('');
   const [isCodeVisible, setIsCodeVisible] = useState(false);
+  const [showSecretUncovered, setShowSecretUncovered] = useState(false);
 
   // Apply dark mode to body and html
   useEffect(() => {
@@ -155,6 +156,22 @@ export function CipherDecoder() {
     return () => {
       document.body.classList.remove('dark-mode');
       document.documentElement.classList.remove('dark-mode');
+    };
+  }, []);
+
+  // Add keyboard shortcut for triggering the SECRET UNCOVERED notification
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Alt+S shortcut to trigger the notification
+      if (e.ctrlKey && e.altKey && e.key === 's') {
+        e.preventDefault(); // Prevent saving the page
+        triggerSecretUncoveredNotification();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
@@ -316,6 +333,8 @@ export function CipherDecoder() {
     if (correctlyDecoded && !isDecoded) {
       setIsDecoded(true);
       triggerConfetti();
+      // Use the new notification instead of the green pop-up
+      triggerSecretUncoveredNotification();
     }
   };
 
@@ -414,6 +433,16 @@ export function CipherDecoder() {
     }
   };
 
+  // Function to trigger the "SECRET UNCOVERED" notification
+  const triggerSecretUncoveredNotification = () => {
+    setShowSecretUncovered(true);
+    
+    // Hide notification after 4 seconds
+    setTimeout(() => {
+      setShowSecretUncovered(false);
+    }, 4000);
+  };
+
   return (
     <>
       <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
@@ -427,15 +456,23 @@ export function CipherDecoder() {
             </div>
           )}
           
-          {isDecoded && (
-            <div className="success-message">
-              🎉 Congratulations! You've decoded the message! 🎉
-            </div>
+          {/* Show the SECRET UNCOVERED notification with overlay */}
+          {showSecretUncovered && (
+            <>
+              <div className="secret-uncovered-overlay"></div>
+              <div className="secret-uncovered-notification">
+                SECRET UNCOVERED
+              </div>
+            </>
           )}
           
           <div className="message-container">
             <h2>Secret Message:</h2>
-            <div className="message encoded" data-symbol-set="runic">
+            <div className={`message encoded ${isDecoded ? 'message-solved' : ''}`} data-symbol-set="runic">
+              {/* Show SOLVED stamp when message is decoded */}
+              {isDecoded && !showSecretUncovered && (
+                <div className="solved-stamp">SOLVED</div>
+              )}
               {encodedMessage.split(' ').map((word, wordIndex) => (
                 <React.Fragment key={`word-${wordIndex}`}>
                   <div className="message-word">
