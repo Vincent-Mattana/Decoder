@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import './CaesarCipher.css';
+import React from 'react';
 
 type CipherType = 'caesar' | 'atbash';
 
@@ -260,17 +261,27 @@ export function CaesarCipher() {
       <div className="message-container">
         <h2>Secret Message:</h2>
         <div className="message encoded">
-          {encodedMessage.split('').map((char, index) => (
-            <span
-              key={index}
-              className={`letter ${selectedLetter === char ? 'selected' : ''} ${mapping[char] ? 'mapped' : ''} ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
-              onClick={() => handleLetterSelect(char)}
-            >
-              {char}
-              {mapping[char] && (
-                <span className="decoded-overlay">{mapping[char]}</span>
+          {encodedMessage.split(' ').map((word, wordIndex) => (
+            <React.Fragment key={`word-${wordIndex}`}>
+              <div className="message-word">
+                {word.split('').map((char, charIndex) => (
+                  <span
+                    key={`${wordIndex}-${charIndex}`}
+                    className={`letter ${selectedLetter === char ? 'selected' : ''} ${mapping[char] ? 'mapped' : ''} ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
+                    onClick={() => handleLetterSelect(char)}
+                  >
+                    {char}
+                    {mapping[char] && (
+                      <span className="decoded-overlay">{mapping[char]}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+              {/* Add a space after each word except the last one */}
+              {wordIndex < encodedMessage.split(' ').length - 1 && (
+                <span className="space-character">&nbsp;</span>
               )}
-            </span>
+            </React.Fragment>
           ))}
         </div>
       </div>
