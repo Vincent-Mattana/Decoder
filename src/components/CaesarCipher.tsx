@@ -68,6 +68,7 @@ export function CaesarCipher() {
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [isDecoded, setIsDecoded] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
   const [firstInteraction, setFirstInteraction] = useState(true);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -217,6 +218,10 @@ export function CaesarCipher() {
     }
   };
 
+  const handleDismissInstructions = () => {
+    setShowInstructions(false);
+  };
+
   return (
     <div className="caesar-cipher">
       <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
@@ -228,10 +233,19 @@ export function CaesarCipher() {
         </div>
       )}
       
-      <div className="instructions">
-        <p>Decode the secret message by mapping each symbol to its original letter.</p>
-        <p className="highlight-instruction">👉 First click a letter in the encoded message, then select the letter you think it represents</p>
-      </div>
+      {showInstructions && (
+        <div className="instructions">
+          <button 
+            className="dismiss-button" 
+            onClick={handleDismissInstructions}
+            aria-label="Dismiss instructions"
+          >
+            ✕
+          </button>
+          <p>Decode the secret message by mapping each symbol to its original letter.</p>
+          <p className="highlight-instruction">👉 First click a letter in the encoded message, then select the letter you think it represents</p>
+        </div>
+      )}
       
       <div className="message-container">
         <h2>Secret Message:</h2>
