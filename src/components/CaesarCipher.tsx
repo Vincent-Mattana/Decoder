@@ -2,60 +2,19 @@ import { useState, useRef, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import './CaesarCipher.css';
 import React from 'react';
-
-type CipherType = 'caesar' | 'atbash';
-
-interface Message {
-  id: number;
-  text: string;
-  shift: number;
-  cipherType?: CipherType;
-}
-
-const SAMPLE_MESSAGES: Message[] = [
-  { id: 1, text: "SAY HELLO TO INTERESTING CRYPTOGRAPHY", shift: 3, cipherType: 'caesar' },
-  { id: 2, text: "THIS IS A SECRET MESSAGE", shift: 5, cipherType: 'caesar' },
-  { id: 3, text: "THE OLD MAN AND THE REMARKABLE SEA", shift: 7, cipherType: 'caesar' },
-  { id: 4, text: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", shift: 4, cipherType: 'caesar' },
-  { id: 5, text: "TO BE OR NOT TO BE THAT IS THE QUESTION", shift: 6, cipherType: 'caesar' },
-  { id: 6, text: "AN APPLE A DAY KEEPS DOCTORS AWAY FOREVER", shift: 8, cipherType: 'caesar' },
-  { id: 7, text: "LOOK AT THE STARS AND MAGNIFICENT GALAXIES", shift: 2, cipherType: 'caesar' },
-  { id: 8, text: "DO OR DO NOT THERE IS NO TRY", shift: 9, cipherType: 'caesar' },
-  { id: 9, text: "A JOURNEY OF THOUSAND MILES BEGINS WITH ONE STEP", shift: 3, cipherType: 'caesar' },
-  { id: 10, text: "ALL THAT GLITTERS IS NOT GOLDEN TREASURE", shift: 5, cipherType: 'caesar' },
-  { id: 11, text: "THE EARLY BIRD CATCHES DELICIOUS WORMS", shift: 7, cipherType: 'caesar' },
-  { id: 12, text: "EVERY CLOUD HAS A SILVER LINING", shift: 4, cipherType: 'caesar' },
-  { id: 13, text: "IF AT FIRST YOU FAIL TRY AGAIN DIFFERENTLY", shift: 6, cipherType: 'caesar' },
-  { id: 14, text: "MIRROR ON THE WALL WHO IS THE FAIREST ONE", shift: 0, cipherType: 'atbash' },
-  { id: 15, text: "REVERSE ALPHABET AND UNLOCK HIDDEN SECRETS", shift: 0, cipherType: 'atbash' },
-  { id: 16, text: "THE OLD PROFESSOR HAS THE KEY FOR CIPHERS", shift: 0, cipherType: 'atbash' },
-  { id: 17, text: "FROM BEGINNING TO END DISCOVER MEANINGS", shift: 0, cipherType: 'atbash' },
-  { id: 18, text: "LIFE HAPPENS WHEN YOU MAKE DIFFERENT PLANS", shift: 5, cipherType: 'caesar' },
-  { id: 19, text: "THE WAY TO GREATNESS IS LOVING YOUR WORK", shift: 7, cipherType: 'caesar' },
-  { id: 20, text: "IN THE END WE REGRET CHANCES NOT TAKEN", shift: 3, cipherType: 'caesar' },
-  { id: 21, text: "BE THE CHANGE YOU WISH TO SEE WORLDWIDE", shift: 8, cipherType: 'caesar' },
-  { id: 22, text: "YOU MISS SHOTS YOU NEVER ATTEMPT TO TAKE", shift: 4, cipherType: 'caesar' },
-  { id: 23, text: "THE KEY UNLOCKS NEW MYSTERIOUS WORLDS", shift: 10, cipherType: 'caesar' },
-  { id: 24, text: "USE MAPS TO DISCOVER HIDDEN TREASURES", shift: 12, cipherType: 'caesar' },
-  { id: 25, text: "TWO MINDS THINK BETTER THAN ONE ALONE", shift: 6, cipherType: 'caesar' },
-  { id: 26, text: "ACTIONS SPEAK LOUDER THAN LENGTHY SPEECHES", shift: 9, cipherType: 'caesar' },
-  { id: 27, text: "NEVER POSTPONE WHAT CAN BE ACCOMPLISHED TODAY", shift: 5, cipherType: 'caesar' },
-  { id: 28, text: "ANCIENT KNOWLEDGE AND MODERN TECHNOLOGY", shift: 0, cipherType: 'atbash' },
-  { id: 29, text: "FLIP SCRIPTS AND DECODE COMPLEX PATTERNS", shift: 0, cipherType: 'atbash' },
-  { id: 30, text: "MAGNIFICENT JOURNEYS BEGIN WITH SMALL STEPS", shift: 0, cipherType: 'atbash' },
-  { id: 31, text: "THE BEST WAY TO PREDICT THE FUTURE IS TO CREATE IT WITH YOUR OWN HANDS", shift: 7, cipherType: 'caesar' },
-  { id: 32, text: "WE MAY ENCOUNTER MANY DEFEATS BUT WE MUST NOT BE DEFEATED BY OUR CIRCUMSTANCES", shift: 4, cipherType: 'caesar' },
-  { id: 33, text: "IT IS DURING OUR DARKEST MOMENTS THAT WE MUST FOCUS TO SEE THE LIGHT AHEAD", shift: 9, cipherType: 'caesar' },
-  { id: 34, text: "THE ONLY LIMIT TO OUR REALIZATION OF TOMORROW WILL BE OUR DOUBTS OF TODAY", shift: 3, cipherType: 'caesar' },
-  { id: 35, text: "TELL ME AND I FORGET TEACH ME AND I REMEMBER INVOLVE ME AND I LEARN", shift: 5, cipherType: 'caesar' },
-  { id: 36, text: "EDUCATION IS THE MOST POWERFUL WEAPON WHICH YOU CAN USE TO CHANGE THE WORLD", shift: 8, cipherType: 'caesar' },
-  { id: 37, text: "IF OPPORTUNITY DOES NOT KNOCK BUILD A DOOR AND CREATE YOUR OWN PATH FORWARD", shift: 6, cipherType: 'caesar' },
-  { id: 38, text: "HUMANS FACE CHALLENGES IN THE DIGITAL AGE BUT WE ADAPT AND GROW STRONGER TOGETHER", shift: 0, cipherType: 'atbash' },
-  { id: 39, text: "THE SECRET OF GETTING AHEAD IS GETTING STARTED WITH SMALL CONSISTENT DAILY ACTIONS", shift: 0, cipherType: 'atbash' },
-  { id: 40, text: "DO WHAT YOU CAN WITH ALL YOU HAVE WHEREVER YOU ARE AND AMAZING THINGS HAPPEN", shift: 0, cipherType: 'atbash' },
-];
+import { CipherType } from './types';
+import { ALL_MESSAGES } from './CipherMessages';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+// Symbol sets for encoding
+const SYMBOL_SETS = {
+  standard: ALPHABET,
+  hieroglyphs: '𓀀𓀁𓀂𓀃𓀄𓀅𓀆𓀇𓀈𓀉𓀊𓀋𓀌𓀍𓀎𓀏𓀐𓀑𓀒𓀓𓀔𓀕𓀖𓀗𓀘𓀙𓀚',
+  geometric: '◉◎●⊙○◌◍◐◑◒◓◔◕◖◗◘◙◚◛◜◝◞◟◠◡◢◣◤◥',
+  runic: 'ᚠᚡᚢᚣᚤᚥᚦᚧᚨᚩᚪᚫᚬᚭᚮᚯᚰᚱᚲᚳᚴᚵᚶᚷᚸᚹᚺᚻ',
+  alchemical: '🜀🜁🜂🜃🜄🜅🜆🜇🜈🜉🜊🜋🜌🜍🜎🜏🜐🜑🜒🜓🜔🜕🜖🜗🜘🜙'
+};
 
 // Function to shuffle an array (for randomizing messages)
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -69,9 +28,9 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 
 export function CaesarCipher() {
   // Shuffle messages and store in state
-  const [messages] = useState<Message[]>(() => shuffleArray(SAMPLE_MESSAGES));
+  const [messages] = useState<typeof ALL_MESSAGES>(() => shuffleArray(ALL_MESSAGES));
   // Start with a random message
-  const [currentMessage, setCurrentMessage] = useState<Message>(() => {
+  const [currentMessage, setCurrentMessage] = useState<typeof ALL_MESSAGES[0]>(() => {
     // Pick a random index from the shuffled messages
     const randomIndex = Math.floor(Math.random() * messages.length);
     return messages[randomIndex];
@@ -81,6 +40,7 @@ export function CaesarCipher() {
   const [isDecoded, setIsDecoded] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
   const [firstInteraction, setFirstInteraction] = useState(true);
+  const [symbolSet, setSymbolSet] = useState<keyof typeof SYMBOL_SETS>('hieroglyphs');
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Compute which letters are already used in the mapping
@@ -92,17 +52,24 @@ export function CaesarCipher() {
     if (char === ' ') return ' ';
     const index = ALPHABET.indexOf(char);
     if (index === -1) return char;
-    return ALPHABET[25 - index];
+    
+    // Get the corresponding symbol from the selected set
+    const symbolAlphabet = SYMBOL_SETS[symbolSet];
+    return symbolAlphabet[25 - index] || SYMBOL_SETS.standard[25 - index];
   };
 
   const encodeWithCaesar = (text: string, shift: number): string => {
+    const symbolAlphabet = SYMBOL_SETS[symbolSet];
+    
     return text
       .split('')
       .map(char => {
         if (char === ' ') return ' ';
         const index = ALPHABET.indexOf(char);
         if (index === -1) return char;
-        return ALPHABET[(index + shift) % 26];
+        
+        // Use the symbol alphabet for encoding
+        return symbolAlphabet[(index + shift) % 26] || SYMBOL_SETS.standard[(index + shift) % 26];
       })
       .join('');
   };
@@ -147,11 +114,21 @@ export function CaesarCipher() {
     setCurrentMessage(messages[nextIndex]);
     setMapping({});
     setIsDecoded(false);
+    
+    // Randomly change the symbol set for variety
+    const symbolSets = Object.keys(SYMBOL_SETS) as Array<keyof typeof SYMBOL_SETS>;
+    const randomSet = symbolSets[Math.floor(Math.random() * symbolSets.length)];
+    setSymbolSet(randomSet);
   };
 
   const handleResetMapping = () => {
     setMapping({});
     setIsDecoded(false);
+  };
+  
+  const handleChangeSymbolSet = (set: keyof typeof SYMBOL_SETS) => {
+    setSymbolSet(set);
+    setMapping({});
   };
 
   const encodedMessage = encodeMessage(
@@ -260,7 +237,20 @@ export function CaesarCipher() {
       
       <div className="message-container">
         <h2>Secret Message:</h2>
-        <div className="message encoded">
+        <div className="symbol-selector">
+          <span>Symbol Style:</span>
+          <select 
+            value={symbolSet} 
+            onChange={(e) => handleChangeSymbolSet(e.target.value as keyof typeof SYMBOL_SETS)}
+          >
+            <option value="hieroglyphs">Hieroglyphs</option>
+            <option value="geometric">Geometric</option>
+            <option value="runic">Runic</option>
+            <option value="alchemical">Alchemical</option>
+            <option value="standard">Standard (A-Z)</option>
+          </select>
+        </div>
+        <div className="message encoded" data-symbol-set={symbolSet}>
           {encodedMessage.split(' ').map((word, wordIndex) => (
             <React.Fragment key={`word-${wordIndex}`}>
               <div className="message-word">
