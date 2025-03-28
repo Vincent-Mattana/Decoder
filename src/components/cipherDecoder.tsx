@@ -159,22 +159,6 @@ export function CipherDecoder() {
     };
   }, []);
 
-  // Add keyboard shortcut for triggering the SECRET UNCOVERED notification
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+Alt+S shortcut to trigger the notification
-      if (e.ctrlKey && e.altKey && e.key === 's') {
-        e.preventDefault(); // Prevent saving the page
-        triggerSecretUncoveredNotification();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
   // Calculate used letters for the alphabet selection
   const usedLetters = useMemo(() => Object.values(mapping), [mapping]);
 
