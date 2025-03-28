@@ -265,6 +265,8 @@ body, html {
   font-size: 1.3rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 /* Letter styles */
@@ -441,6 +443,10 @@ body, html {
   right: 0;
   bottom: 0;
   z-index: 1;
+}
+
+.keyboard-buttons.right-side .action-button {
+  margin-bottom: 1rem;
 }
 
 .alphabet {
