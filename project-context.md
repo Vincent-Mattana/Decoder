@@ -155,6 +155,13 @@ A hidden feature activated by double-clicking the title which provides:
 ### Message Codes
 Each message has a unique 4-character code (format: 2 letters + 2 numbers) that allows users to share specific messages with others.
 
+### Secret Uncovered Notification
+A dramatic full-screen notification that appears when a secret message is successfully decoded:
+- Large golden "SECRET UNCOVERED" text displayed center screen
+- Styled similar to game achievement notifications
+- Fades in and out over 4 seconds
+- Dark overlay to enhance visibility and dramatic effect
+
 ### Visual Feedback
 The UI provides visual cues:
 - Highlighted letters when selected
