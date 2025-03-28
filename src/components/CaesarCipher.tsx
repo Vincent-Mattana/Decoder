@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti';
 import './CaesarCipher.css';
 import React from 'react';
 import { CipherType } from './types';
-import { ALL_MESSAGES } from './CipherMessages';
+import { ALL_MESSAGES } from './CipherMessages.ts';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
