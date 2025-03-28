@@ -15,7 +15,7 @@ const SYMBOL_SETS = {
 
 // Debug message for secret mode
 const DEBUG_MESSAGE = {
-  id: 'debug',
+  id: 999,
   text: 'I AM',
   shift: 1,
   cipherType: 'caesar' as CipherType
