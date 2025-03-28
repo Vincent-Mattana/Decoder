@@ -480,40 +480,12 @@ export function CipherDecoder() {
             {isDecoded ? "You've successfully decoded the message!" : ""}
           </div>
           
-          {/* Title Section - Now in a fixed container with action buttons */}
+          {/* Title Section - Now in a fixed container without duplicate buttons */}
           <div className="title-container">
-            <div className="action-buttons top-buttons left-side">
-              <button className="action-button next" onClick={handleNewMessage}>
-                Next Message
-              </button>
-            </div>
-            
             <AnimatedTitle 
               onDoubleClick={handleTitleDoubleClick}
               stopAnimation={isDebugMode || isDecoded}
             />
-            
-            <div className="action-buttons top-buttons right-side">
-              <button className="action-button reset" onClick={handleResetMapping}>
-                Reset
-              </button>
-              {!showCodeInput ? (
-                <button className="action-button code" onClick={toggleCodeInput}>
-                  Enter Code
-                </button>
-              ) : (
-                <input 
-                  ref={codeInputRef}
-                  type="text" 
-                  placeholder="Code" 
-                  className="code-input inline"
-                  value={codeInputValue}
-                  onChange={handleCodeInputChange}
-                  onKeyDown={handleCodeInputKeyDown}
-                  maxLength={4}
-                />
-              )}
-            </div>
           </div>
           
           <div className="main-content">
@@ -565,31 +537,60 @@ export function CipherDecoder() {
             </div>
           </div>
           
-          {/* Controls Section - Now only for the alphabet */}
-          <div className="controls">
-            <div className="alphabet">
-              {ALPHABET.split('').map(letter => {
-                const isUsed = usedLetters.includes(letter);
-                return (
-                  <button
-                    key={letter}
-                    className={`letter-button 
-                      ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
-                      ${selectedLetter ? 'choose-me' : ''} 
-                      ${isUsed ? 'used' : ''}`}
-                    onClick={() => {
-                      // Only process click if a rune is selected and the letter isn't already used
-                      if (selectedLetter && !isUsed) {
-                        handleReplacementSelect(letter);
-                      }
-                    }}
-                    // Visual disabled state, but keep onClick handler for safety
-                    disabled={!selectedLetter || isUsed}
-                  >
-                    {letter}
-                  </button>
-                );
-              })}
+          {/* Keyboard Section - With integrated control buttons */}
+          <div className="keyboard">
+            <div className="keyboard-content">
+              <div className="keyboard-buttons left-side">
+                <button className="action-button reset" onClick={handleResetMapping}>
+                  Reset
+                </button>
+                <button className="action-button" onClick={handleNewMessage}>
+                  Next Message
+                </button>
+              </div>
+              
+              <div className="alphabet">
+                {ALPHABET.split('').map(letter => {
+                  const isUsed = usedLetters.includes(letter);
+                  return (
+                    <button
+                      key={letter}
+                      className={`letter-button 
+                        ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
+                        ${selectedLetter ? 'choose-me' : ''} 
+                        ${isUsed ? 'used' : ''}`}
+                      onClick={() => {
+                        // Only process click if a rune is selected and the letter isn't already used
+                        if (selectedLetter && !isUsed) {
+                          handleReplacementSelect(letter);
+                        }
+                      }}
+                      // Visual disabled state, but keep onClick handler for safety
+                      disabled={!selectedLetter || isUsed}
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="keyboard-buttons right-side">
+                <button className="action-button code" onClick={toggleCodeInput}>
+                  {showCodeInput ? "Cancel" : "Enter Code"}
+                </button>
+                {showCodeInput && (
+                  <input 
+                    ref={codeInputRef}
+                    type="text" 
+                    placeholder="Code" 
+                    className="code-input integrated"
+                    value={codeInputValue}
+                    onChange={handleCodeInputChange}
+                    onKeyDown={handleCodeInputKeyDown}
+                    maxLength={4}
+                  />
+                )}
+              </div>
             </div>
           </div>
           
