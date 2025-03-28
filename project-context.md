@@ -115,10 +115,13 @@ The user interface has been optimized for an intuitive and focused experience:
    - "Next Message" button in the top-right corner
 
 2. **Middle Section**:
+   - "Secret Message:" title is centered horizontally at the top of the message container
+   - Message code eye emoji appears inline directly next to the title for easy access
    - Secret message container is vertically centered between the title and keyboard
    - Message uses large runic symbols (2.25rem font size) for better visibility
    - Gray background fits tightly around the message content
    - Message container adapts to content size
+   - Spaces between words have double-width gaps (1rem) for improved readability
 
 3. **Bottom Section**:
    - Alphabet keyboard is fixed at the bottom of the screen
@@ -162,6 +165,7 @@ The application uses a dark-themed UI with:
 - Dark background (#121212)
 - Glowing text effects using text-shadow
 - Runic symbols for encrypted text (2.25rem size)
+- Doubled space width between words (1rem) for better message readability
 - Fixed positioning for control elements
 - CSS variables for dynamic spacing and responsive adjustments
 - Interactive elements with hover and focus effects
