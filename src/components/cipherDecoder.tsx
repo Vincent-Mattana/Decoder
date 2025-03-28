@@ -458,6 +458,17 @@ export function CipherDecoder() {
           {/* Title Section - Now in a fixed container with action buttons */}
           <div className="title-container">
             <div className="action-buttons top-buttons left-side">
+              <button className="action-button next" onClick={handleNewMessage}>
+                Next Message
+              </button>
+            </div>
+            
+            <AnimatedTitle 
+              onDoubleClick={handleTitleDoubleClick}
+              stopAnimation={isDebugMode || isDecoded}
+            />
+            
+            <div className="action-buttons top-buttons right-side">
               <button className="action-button reset" onClick={handleResetMapping}>
                 Reset
               </button>
@@ -490,17 +501,6 @@ export function CipherDecoder() {
                   </button>
                 </div>
               )}
-            </div>
-            
-            <AnimatedTitle 
-              onDoubleClick={handleTitleDoubleClick}
-              stopAnimation={isDebugMode || isDecoded}
-            />
-            
-            <div className="action-buttons top-buttons right-side">
-              <button className="action-button next" onClick={handleNewMessage}>
-                Next Message
-              </button>
             </div>
           </div>
           

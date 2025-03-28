@@ -75,7 +75,7 @@ body, html {
 /* Title container - new */
 .title-container {
   width: 100%;
-  padding: 1rem 0;
+  padding: 2rem 0 1rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -833,13 +833,13 @@ body, html {
 .action-buttons.top-buttons.left-side {
   z-index: 2;
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0;
+  left: 0;
 }
 
 .action-buttons.top-buttons.right-side {
   z-index: 2;
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0;
+  right: 0;
 } 

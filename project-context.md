@@ -104,6 +104,31 @@ Letters are mapped to their reverse in the alphabet:
 - C → X
 - etc.
 
+## UI Layout
+
+The user interface has been optimized for an intuitive and focused experience:
+
+1. **Top Section**:
+   - Title "Decoder" is centered at the top
+   - Control buttons are positioned in the corners
+   - "Reset" and "Enter Code" buttons in the top-left corner
+   - "Next Message" button in the top-right corner
+
+2. **Middle Section**:
+   - Secret message container is vertically centered between the title and keyboard
+   - Message uses large runic symbols (2.25rem font size) for better visibility
+   - Gray background fits tightly around the message content
+   - Message container adapts to content size
+
+3. **Bottom Section**:
+   - Alphabet keyboard is fixed at the bottom of the screen
+   - Used for selecting letters to decode the message
+
+4. **Responsive Design**:
+   - Layout adapts to different screen sizes
+   - CSS variables for dynamic spacing
+   - Mobile-specific optimizations
+
 ## User Flow
 
 1. User is presented with an encrypted message using runic symbols
@@ -136,8 +161,9 @@ The UI provides visual cues:
 The application uses a dark-themed UI with:
 - Dark background (#121212)
 - Glowing text effects using text-shadow
-- Runic symbols for encrypted text
-- Responsive design for all screen sizes
+- Runic symbols for encrypted text (2.25rem size)
+- Fixed positioning for control elements
+- CSS variables for dynamic spacing and responsive adjustments
 - Interactive elements with hover and focus effects
 
 ## Deployment
