@@ -456,7 +456,21 @@ export function CipherDecoder() {
           
           <div className="main-content">
             <div className="message-container">
-              <h2>Secret Message:</h2>
+              <h2>
+                Secret Message:
+                {currentMessage.code && (
+                  <span className="message-code">
+                    <div className="code-container">
+                      <div className="code-reveal-icon" onClick={toggleCodeVisibility}>
+                        {isCodeVisible ? "✓" : "👁️"}
+                      </div>
+                      <span className={`code-display ${isCodeVisible ? 'visible' : ''}`}>
+                        {currentMessage.code}
+                      </span>
+                    </div>
+                  </span>
+                )}
+              </h2>
               <div className={`message encoded ${isDecoded ? 'message-solved' : ''}`} data-symbol-set="runic">
                 {/* Show SOLVED stamp when message is decoded */}
                 {isDecoded && !showSecretUncovered && (
@@ -487,19 +501,6 @@ export function CipherDecoder() {
                   </React.Fragment>
                 ))}
               </div>
-              {currentMessage.code && (
-                <div className="message-code">
-                  Message Code: 
-                  <div className="code-container">
-                    <div className="code-reveal-icon" onClick={toggleCodeVisibility}>
-                      {isCodeVisible ? "✓" : "👁️"}
-                    </div>
-                    <span className={`code-display ${isCodeVisible ? 'visible' : ''}`}>
-                      {currentMessage.code}
-                    </span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           

@@ -230,13 +230,11 @@ body, html {
 
 /* Message code */
 .message-code {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #aaa;
+  margin-left: 0.5rem;
+  position: relative;
+  z-index: 10;
 }
 
 .code-container {
@@ -247,7 +245,6 @@ body, html {
 
 .code-reveal-icon {
   cursor: pointer;
-  margin-right: 0.5rem;
   font-size: 1rem;
   color: #90cdf4;
 }
@@ -259,6 +256,15 @@ body, html {
 
 .code-display.visible {
   opacity: 1;
+}
+
+/* Message container title with styling for the inline eye icon */
+.message-container h2 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
 }
 
 /* Letter styles */
@@ -1076,11 +1082,16 @@ body, html {
   }
 }
 
+@media (max-width: 400px) {
+  /* Add any specific styles for very small screens here if needed */
+}
+
 /* Title for the message container */
 .message-container h2 {
   margin-top: 0;
   margin-bottom: 0.25rem;
   font-size: 1.3rem;
+  position: relative;
 }
 
 .action-button.load,
