@@ -2,11 +2,14 @@
  * CipherMessages.ts
  * 
  * Rules for cipher messages:
+ * 0. All messages should have a ratio of ROUGHLY 30% Small words (4 char or less), 70% large words (5+ chars)
+ * 0a. All messages should have substantial overlap of letters to make resolving the puzzle do-able.
+ * 0b. Most messages should contain words with repeated letters.
  * 1. All messages must be uppercase
  * 2. Messages should be meaningful and self-contained
  * 3. Messages must not exceed 100 characters in length
- * 4. No special characters allowed, only letters, numbers and spaces
- * 5. Messages should have educational or inspirational content
+ * 4. No special characters allowed, only letters and spaces
+ * 5. Messages should have intersting, colourful, descriptive, or dramatic, can be pop culture (especially games) content
  * 6. Each message has a unique ID and code
  * 7. Messages are encoded using either Caesar or Atbash ciphers
  */
@@ -34,36 +37,36 @@ const generateUniqueCode = (id: number): string => {
 };
 
 export const ALL_MESSAGES: Message[] = [
-  { id: 1, text: "THE SECRET DECODER WILL HELP YOU SOLVE THE MYSTERY", shift: 3, cipherType: 'caesar', code: generateUniqueCode(1) },
-  { id: 2, text: "THIS IS A SECRET MESSAGE THAT YOU CAN DECODE", shift: 5, cipherType: 'caesar', code: generateUniqueCode(2) },
-  { id: 3, text: "THE OLD MAN AND THE SEA IS A CLASSIC NOVEL", shift: 7, cipherType: 'caesar', code: generateUniqueCode(3) },
-  { id: 4, text: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", shift: 4, cipherType: 'caesar', code: generateUniqueCode(4) },
-  { id: 5, text: "TO BE OR NOT TO BE THAT IS THE QUESTION", shift: 6, cipherType: 'caesar', code: generateUniqueCode(5) },
-  { id: 6, text: "AN APPLE A DAY KEEPS THE DOCTOR AWAY FROM HERE", shift: 8, cipherType: 'caesar', code: generateUniqueCode(6) },
-  { id: 7, text: "LOOK AT THE STARS AND DREAM OF THE FUTURE TONIGHT", shift: 2, cipherType: 'caesar', code: generateUniqueCode(7) },
-  { id: 8, text: "DO OR DO NOT THERE IS NO TRY SAID THE MASTER", shift: 9, cipherType: 'caesar', code: generateUniqueCode(8) },
-  { id: 9, text: "A JOURNEY OF THOUSAND MILES BEGINS WITH ONE SMALL STEP", shift: 3, cipherType: 'caesar', code: generateUniqueCode(9) },
-  { id: 10, text: "ALL THAT GLITTERS IS NOT GOLD BUT IT SHINES BRIGHTLY", shift: 5, cipherType: 'caesar', code: generateUniqueCode(10) },
-  { id: 11, text: "THE EARLY BIRD CATCHES THE WORM IN THE MORNING", shift: 7, cipherType: 'caesar', code: generateUniqueCode(11) },
-  { id: 12, text: "EVERY CLOUD HAS A SILVER LINING AFTER THE RAIN", shift: 4, cipherType: 'caesar', code: generateUniqueCode(12) },
-  { id: 13, text: "IF AT FIRST YOU FAIL TRY AND TRY AGAIN TOMORROW", shift: 6, cipherType: 'caesar', code: generateUniqueCode(13) },
-  { id: 14, text: "MIRROR ON THE WALL WHO IS THE FAIREST ONE OF ALL", shift: 0, cipherType: 'atbash', code: generateUniqueCode(14) },
-  { id: 15, text: "REVERSE THE ALPHABET AND UNLOCK THE HIDDEN SECRETS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(15) },
-  { id: 16, text: "THE OLD PROFESSOR HAS THE KEY FOR THE ANCIENT CIPHER", shift: 0, cipherType: 'atbash', code: generateUniqueCode(16) },
-  { id: 17, text: "FROM BEGINNING TO END THE STORY REVEALS ITS MEANING", shift: 0, cipherType: 'atbash', code: generateUniqueCode(17) },
-  { id: 18, text: "LIFE HAPPENS WHEN YOU ARE MAKING DIFFERENT PLANS", shift: 5, cipherType: 'caesar', code: generateUniqueCode(18) },
-  { id: 19, text: "THE ONLY WAY TO GREATNESS IS LOVING WHAT YOU DO", shift: 7, cipherType: 'caesar', code: generateUniqueCode(19) },
-  { id: 20, text: "IN THE END WE ONLY REGRET THE CHANCES WE NEVER TAKE", shift: 3, cipherType: 'caesar', code: generateUniqueCode(20) },
-  { id: 21, text: "BE THE CHANGE YOU WISH TO SEE IN THE WORLD TODAY", shift: 8, cipherType: 'caesar', code: generateUniqueCode(21) },
-  { id: 22, text: "YOU MISS ALL THE SHOTS YOU NEVER ATTEMPT TO TAKE", shift: 4, cipherType: 'caesar', code: generateUniqueCode(22) },
-  { id: 23, text: "THE SPECIAL KEY UNLOCKS NEW MYSTERIOUS WORLDS", shift: 10, cipherType: 'caesar', code: generateUniqueCode(23) },
-  { id: 24, text: "USE THE MAP TO DISCOVER HIDDEN ANCIENT TREASURES", shift: 12, cipherType: 'caesar', code: generateUniqueCode(24) },
-  { id: 25, text: "TWO MINDS THINK BETTER THAN ONE MIND ALONE", shift: 6, cipherType: 'caesar', code: generateUniqueCode(25) },
-  { id: 26, text: "ACTIONS SPEAK LOUDER THAN THE LONGEST SPEECHES", shift: 9, cipherType: 'caesar', code: generateUniqueCode(26) },
-  { id: 27, text: "NEVER POSTPONE WHAT CAN BE DONE TODAY AND NOW", shift: 5, cipherType: 'caesar', code: generateUniqueCode(27) },
-  { id: 28, text: "ANCIENT KNOWLEDGE AND MODERN TECHNOLOGY TOGETHER", shift: 0, cipherType: 'atbash', code: generateUniqueCode(28) },
-  { id: 29, text: "FLIP THE SCRIPT AND DECODE THE COMPLEX PATTERNS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(29) },
-  { id: 30, text: "MAGNIFICENT JOURNEYS BEGIN WITH THE SMALLEST STEPS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(30) },
+  { id: 1, text: "THE SECRET DECODER WILL UNVEIL MYSTERIOUS PUZZLES FOR YOU", shift: 3, cipherType: 'caesar', code: generateUniqueCode(1) },
+  { id: 2, text: "THIS IS A HIDDEN MESSAGE THAT CONTAINS POWERFUL SECRETS", shift: 5, cipherType: 'caesar', code: generateUniqueCode(2) },
+  { id: 3, text: "THE OLD MAN AND THE DEEP BLUE SEA TELLS A TIMELESS STORY", shift: 7, cipherType: 'caesar', code: generateUniqueCode(3) },
+  { id: 4, text: "THE QUICK BROWN FOX JUMPS OVER SEVERAL LAZY SLEEPING DOGS", shift: 4, cipherType: 'caesar', code: generateUniqueCode(4) },
+  { id: 5, text: "TO BE OR NOT TO BE THAT REMAINS THE ESSENTIAL QUESTION", shift: 6, cipherType: 'caesar', code: generateUniqueCode(5) },
+  { id: 6, text: "AN APPLE A DAY KEEPS THE DOCTOR AWAY FOREVER AND ALWAYS", shift: 8, cipherType: 'caesar', code: generateUniqueCode(6) },
+  { id: 7, text: "GAZE AT THE SHIMMERING STARS AND DREAM OF ENDLESS POSSIBILITIES", shift: 2, cipherType: 'caesar', code: generateUniqueCode(7) },
+  { id: 8, text: "DO OR DO NOT THERE IS NO ATTEMPT SAID THE ANCIENT MASTER", shift: 9, cipherType: 'caesar', code: generateUniqueCode(8) },
+  { id: 9, text: "A GRAND JOURNEY OF THOUSAND MILES BEGINS WITH ONE SMALL STEP", shift: 3, cipherType: 'caesar', code: generateUniqueCode(9) },
+  { id: 10, text: "ALL THAT GLITTERS BRIGHTLY IS NOT GOLDEN BUT STILL PRECIOUS", shift: 5, cipherType: 'caesar', code: generateUniqueCode(10) },
+  { id: 11, text: "THE EARLY MORNING BIRD ALWAYS CATCHES THE FATTEST WORMS", shift: 7, cipherType: 'caesar', code: generateUniqueCode(11) },
+  { id: 12, text: "EVERY DARK CLOUD HAS A BRILLIANT SILVER LINING AFTER STORMS", shift: 4, cipherType: 'caesar', code: generateUniqueCode(12) },
+  { id: 13, text: "IF YOU FAIL INITIALLY THEN CONTINUE ATTEMPTING AGAIN AND AGAIN", shift: 6, cipherType: 'caesar', code: generateUniqueCode(13) },
+  { id: 14, text: "MIRROR MIRROR ON THE WALL WHO IS THE FAIREST PERSON OF ALL", shift: 0, cipherType: 'atbash', code: generateUniqueCode(14) },
+  { id: 15, text: "REVERSE THE PATTERN OF LETTERS TO UNLOCK MYSTERIOUS HIDDEN SECRETS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(15) },
+  { id: 16, text: "THE ECCENTRIC PROFESSOR POSSESSES THE KEYS FOR ANCIENT FORGOTTEN CIPHERS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(16) },
+  { id: 17, text: "FROM THE BEGINNING TO THE ENDING THE NARRATIVE REVEALS DEEPER MEANING", shift: 0, cipherType: 'atbash', code: generateUniqueCode(17) },
+  { id: 18, text: "LIFE HAPPENS SUDDENLY WHEN YOU ARE BUSY MAKING DIFFERENT ELABORATE PLANS", shift: 5, cipherType: 'caesar', code: generateUniqueCode(18) },
+  { id: 19, text: "THE ONLY SUCCESSFUL PATH TO ACHIEVING GREATNESS IS LOVING WHAT YOU DO", shift: 7, cipherType: 'caesar', code: generateUniqueCode(19) },
+  { id: 20, text: "IN THE END WE ONLY DEEPLY REGRET THE CHANCES WE NEVER DECIDED TO TAKE", shift: 3, cipherType: 'caesar', code: generateUniqueCode(20) },
+  { id: 21, text: "BE THE POSITIVE CHANGE YOU TRULY WISH TO SEE HAPPENING IN THIS WORLD", shift: 8, cipherType: 'caesar', code: generateUniqueCode(21) },
+  { id: 22, text: "YOU MISS ALL THE IMPORTANT SHOTS YOU NEVER BRAVELY ATTEMPT TO TAKE", shift: 4, cipherType: 'caesar', code: generateUniqueCode(22) },
+  { id: 23, text: "THE MAGICAL SPECIAL KEY UNLOCKS SEVERAL NEW MYSTERIOUS PARALLEL WORLDS", shift: 10, cipherType: 'caesar', code: generateUniqueCode(23) },
+  { id: 24, text: "USE THE ANCIENT YELLOWED MAP TO DISCOVER HIDDEN FORGOTTEN TREASURES", shift: 12, cipherType: 'caesar', code: generateUniqueCode(24) },
+  { id: 25, text: "TWO BRILLIANT MINDS THINK BETTER TOGETHER THAN ONE MIND WORKING ALONE", shift: 6, cipherType: 'caesar', code: generateUniqueCode(25) },
+  { id: 26, text: "MEANINGFUL ACTIONS ALWAYS SPEAK LOUDER THAN THE LONGEST EMOTIONAL SPEECHES", shift: 9, cipherType: 'caesar', code: generateUniqueCode(26) },
+  { id: 27, text: "NEVER POSTPONE OR DELAY WHAT CAN BE ACCOMPLISHED TODAY AND NOW", shift: 5, cipherType: 'caesar', code: generateUniqueCode(27) },
+  { id: 28, text: "COMBINING ANCIENT MYSTICAL KNOWLEDGE WITH MODERN TECHNOLOGICAL ADVANCES CREATES WONDERS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(28) },
+  { id: 29, text: "FLIP THE FAMILIAR SCRIPT AND CAREFULLY DECODE THE COMPLEX RECURRING PATTERNS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(29) },
+  { id: 30, text: "MAGNIFICENT THRILLING JOURNEYS BEGIN WITH THE SMALLEST TENTATIVE STEPS FORWARD", shift: 0, cipherType: 'atbash', code: generateUniqueCode(30) },
   { id: 31, text: "THE BEST WAY TO PREDICT THE FUTURE IS TO CREATE IT WITH YOUR OWN HANDS", shift: 7, cipherType: 'caesar', code: generateUniqueCode(31) },
   { id: 32, text: "WE MAY ENCOUNTER MANY DEFEATS BUT WE MUST NOT BE DEFEATED IN THE END", shift: 4, cipherType: 'caesar', code: generateUniqueCode(32) },
   { id: 33, text: "IT IS DURING OUR DARKEST MOMENTS THAT WE MUST FOCUS TO SEE THE LIGHT", shift: 9, cipherType: 'caesar', code: generateUniqueCode(33) },
