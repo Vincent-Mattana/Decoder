@@ -25,12 +25,12 @@ body, html {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0;
   text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   min-height: 100vh;
   height: 100vh;
@@ -45,6 +45,8 @@ body, html {
   --mapped-glow: 0 0 8px rgba(99, 179, 237, 0.6);
   border: none;
   outline: none;
+  --title-height: 6rem;
+  --keyboard-height: 10rem;
 }
 
 /* Root element fixes */
@@ -70,19 +72,36 @@ body, html {
   padding: 0;
 }
 
+/* Title container - new */
+.title-container {
+  width: 100%;
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color: #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
 /* Title */
 .animated-title {
   font-size: 2.5rem;
-  margin-bottom: 2rem;
-  position: absolute;
-  top: 8vh;
+  margin: 0;
   cursor: pointer;
   user-select: none;
   height: 3.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  z-index: 1;
 }
 
 .title-letter {
@@ -124,6 +143,7 @@ body, html {
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: bold;
+  z-index: 20;
 }
 
 /* Main contents container - create a wrapper for the message and keyboard */
@@ -132,40 +152,46 @@ body, html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 900px;
-  position: absolute;
+  width: auto;
+  max-width: max-content;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  margin: auto;
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%); /* Slightly higher than true center */
-  padding: 0 1rem;
-  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  margin-top: calc((var(--title-height) - var(--keyboard-height)) / 2);
 }
 
 /* Message container */
 .message-container {
   width: 100%;
-  margin: 0 0 3rem 0;
-  padding: 1.5rem;
+  margin: 0;
+  padding: 0.5rem;
   border-radius: 8px;
   position: relative;
   background-color: #2a2a2a;
   border: 1px solid #444;
   box-sizing: border-box;
-  min-height: 200px;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
+  max-width: fit-content;
+  align-self: center;
 }
 
 .message {
   font-size: 1.5rem;
-  margin: 1rem 0;
+  margin: 0.25rem 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5rem 0.25rem;
-  padding: 0.5rem;
+  gap: 0.25rem 0.15rem;
+  padding: 0.1rem;
   max-width: 100%;
   min-height: 80px;
 }
@@ -176,6 +202,7 @@ body, html {
   transform-origin: center;
   position: relative;
   text-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
+  font-size: 2.25rem;
 }
 
 /* Apply glow animation to both hovered and highlighted runes */
@@ -188,8 +215,8 @@ body, html {
 .message-word {
   display: flex;
   white-space: nowrap;
-  margin-bottom: 0.25rem;
-  min-height: 1.8rem;
+  margin-bottom: 0.4rem;
+  min-height: 3.75rem;
 }
 
 .space-character {
@@ -233,10 +260,10 @@ body, html {
 /* Letter styles */
 .letter {
   display: inline-block;
-  width: 1.8rem;
-  height: 1.8rem;
-  line-height: 1.8rem;
-  margin: 0 0.2rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  line-height: 3.4rem;
+  margin: 0 0.1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -259,7 +286,7 @@ body, html {
   opacity: 1;
   color: var(--mapped-color) !important;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   text-shadow: var(--mapped-glow);
   animation: none !important;
   background-color: #1a365d;
@@ -279,16 +306,89 @@ body, html {
   border-color: var(--mapped-color);
 }
 
-/* Controls section */
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.action-buttons.top-buttons {
+  background-color: transparent;
+  border-top: none;
+  margin-top: 0;
+  width: auto;
+  min-width: 120px;
+}
+
+.left-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.right-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.action-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #2b6cb0;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: #3182ce;
+  transform: translateY(-2px);
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-button.reset {
+  background-color: #822727;
+}
+
+.action-button.reset:hover {
+  background-color: #c53030;
+}
+
+.action-button.code {
+  margin-left: 1rem;
+}
+
+.action-button.load,
+.action-button.cancel {
+  margin-left: 0.25rem;
+}
+
+/* Controls section - now only for the alphabet */
 .controls {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  min-height: 150px;
+  padding: 0.5rem 0 0 0;
+  box-sizing: border-box;
+  min-height: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  background-color: #1a1a1a;
+  border-top: 1px solid #333;
+  z-index: 10;
 }
 
 .alphabet {
@@ -296,9 +396,10 @@ body, html {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
   max-width: 700px;
-  margin: 1rem auto;
-  padding: 0.5rem;
+  margin: 0 auto;
+  padding: 0.25rem 0.25rem 0.5rem 0.25rem;
 }
 
 .letter-button {
@@ -371,53 +472,19 @@ body, html {
   transform: rotate(-45deg);
 }
 
-/* Action buttons */
-.action-buttons {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 1.5rem;
-  min-height: 40px;
-}
-
-.action-button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #2b6cb0;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin: 0 0.25rem;
-}
-
-.action-button:hover:not(:disabled) {
-  background-color: #3182ce;
-  transform: translateY(-2px);
-}
-
-.action-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.action-button.reset {
-  background-color: #822727;
-}
-
-.action-button.reset:hover {
-  background-color: #c53030;
-}
-
-.button-group {
-  display: flex;
-}
-
-/* Code input */
+/* Center the code input */
 .code-input-container {
   display: flex;
   align-items: center;
+  justify-content: center;
+  background-color: rgba(26, 32, 44, 0.9);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #4a5568;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
 }
 
 .code-input {
@@ -488,35 +555,45 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 5rem;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 1.5rem 3rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  font-family: 'Times New Roman', serif;
-  color: #ffd700;
-  text-shadow: 
-    0 0 10px rgba(255, 215, 0, 0.7),
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
   z-index: 1000;
-  animation: fadeInOut 4s ease-in-out forwards;
-  white-space: nowrap;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 0 10px rgba(144, 205, 244, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+.secret-uncovered-notification.show {
+  opacity: 1;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.secret-uncovered-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #90cdf4;
+}
+
+/* Secret overlay */
 .secret-uncovered-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(0, 0, 0, 0.5),
-    rgba(0, 0, 0, 0.6)
-  );
-  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -1;
   pointer-events: none;
-  animation: overlayFade 4s ease-in-out forwards;
+  animation: overlayFade 3s ease-in-out;
 }
 
 /* Animations */
@@ -578,40 +655,191 @@ body, html {
 
 /* Responsive adjustments */
 @media (max-height: 700px) {
+  .title-container {
+    padding: 0.5rem 0;
+  }
+  
   .animated-title {
-    top: 5vh;
-    margin-bottom: 1rem;
     font-size: 2rem;
+    height: 2.5rem;
   }
   
   .main-content {
-    transform: translate(-50%, -48%);
+    top: 4.5rem;
+    bottom: 12rem;
+    max-height: calc(100vh - 17rem);
+    overflow-y: auto;
   }
   
   .message-container {
-    margin: 0 0 2rem 0;
-    min-height: 180px;
+    min-height: auto;
+    padding: 0.5rem;
+  }
+  
+  .controls {
+    min-height: 120px;
+  }
+
+  .action-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .cipher-decoder {
+    --title-height: 4.5rem;
+    --keyboard-height: 8rem;
   }
 }
 
 @media (max-height: 600px) {
+  .title-container {
+    padding: 0.25rem 0;
+  }
+  
   .animated-title {
-    top: 3vh;
-    margin-bottom: 0.5rem;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    height: 2rem;
   }
   
   .main-content {
-    transform: translate(-50%, -49%);
+    top: 3.5rem;
+    bottom: 10rem;
+    max-height: calc(100vh - 14rem);
   }
   
   .message-container {
-    margin: 0 0 1.5rem 0;
-    min-height: 160px;
-    padding: 1rem;
+    min-height: auto;
+    padding: 0.5rem;
   }
   
   .controls {
-    min-height: 130px;
+    padding: 0.25rem 0 0 0;
+    min-height: 110px;
   }
+  
+  .alphabet {
+    margin: 0 auto;
+    padding: 0.15rem 0.15rem 0.25rem 0.15rem;
+  }
+  
+  .action-buttons {
+    padding: 0.25rem 0.75rem;
+  }
+  
+  .letter-button {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    margin: 2px;
+  }
+
+  .action-button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .cipher-decoder {
+    --title-height: 3.5rem;
+    --keyboard-height: 7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .message {
+    font-size: 1.5rem;
+  }
+  
+  .letter {
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.2rem;
+  }
+  
+  [data-symbol-set="runic"] .letter:not(.mapped) {
+    font-size: 2.1rem;
+  }
+  
+  .letter.mapped {
+    font-size: 2.1rem;
+  }
+  
+  .action-buttons {
+    position: relative;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+  
+  .code-input-container {
+    position: relative;
+    left: auto;
+    transform: none;
+    max-width: 100%;
+    margin: 0.5rem 0;
+    order: 2;
+  }
+  
+  .left-buttons {
+    flex-wrap: wrap;
+  }
+
+  .action-buttons.top-buttons {
+    padding: 0 0.5rem;
+    min-width: 80px;
+  }
+  
+  .action-button {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .code-input-container {
+    right: 0;
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .title-container {
+    padding-top: 0.5rem;
+    height: 6rem;
+  }
+  
+  .action-buttons.top-buttons.left-side {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+  
+  .action-buttons.top-buttons.right-side {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+/* Title for the message container */
+.message-container h2 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  font-size: 1.3rem;
+}
+
+.action-button.load,
+.action-button.cancel {
+  margin-left: 0.25rem;
+}
+
+.action-buttons.top-buttons.left-side {
+  z-index: 2;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.action-buttons.top-buttons.right-side {
+  z-index: 2;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 } 

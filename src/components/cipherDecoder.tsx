@@ -429,26 +429,80 @@ export function CipherDecoder() {
 
   return (
     <>
-      <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
-      <div className="app-container">
-        <div className="cipher-decoder dark-mode" style={colorStyle}>
-          <AnimatedTitle onDoubleClick={handleTitleDoubleClick} stopAnimation={isDecoded} />
-          
-          {isDebugMode && (
-            <div className="debug-mode-indicator">
-              DEBUG MODE
-            </div>
-          )}
-          
-          {/* Show the SECRET UNCOVERED notification with overlay */}
-          {showSecretUncovered && (
+      {isDebugMode && (
+        <div className="debug-mode-indicator">DEBUG MODE</div>
+      )}
+      
+      {/* Show the SECRET UNCOVERED notification with overlay */}
+      {showSecretUncovered && (
+        <div className={`secret-uncovered-notification ${showSecretUncovered ? 'show' : ''}`}>
+          {!isDebugMode && (
             <>
+              <div className="secret-uncovered-title">Secret Mode Activated!</div>
               <div className="secret-uncovered-overlay"></div>
-              <div className="secret-uncovered-notification">
-                SECRET UNCOVERED
-              </div>
             </>
           )}
+        </div>
+      )}
+    
+      <div className="app-container">
+        <div className="cipher-decoder dark-mode" style={colorStyle}>
+          {/* Confetti canvas reference for celebrations */}
+          <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
+          
+          {/* Hidden success message for screen readers */}
+          <div className="success-message" aria-live="polite">
+            {isDecoded ? "You've successfully decoded the message!" : ""}
+          </div>
+          
+          {/* Title Section - Now in a fixed container with action buttons */}
+          <div className="title-container">
+            <div className="action-buttons top-buttons left-side">
+              <button className="action-button reset" onClick={handleResetMapping}>
+                Reset
+              </button>
+              <button className="action-button code" onClick={toggleCodeInput}>
+                Enter Code
+              </button>
+              
+              {/* Code input container positioned beneath the buttons */}
+              {showCodeInput && (
+                <div className="code-input-container">
+                  <input 
+                    type="text" 
+                    placeholder="Enter code" 
+                    className="code-input"
+                    value={codeInputValue}
+                    onChange={handleCodeInputChange}
+                    onKeyDown={handleCodeInputKeyDown}
+                    maxLength={4}
+                    autoFocus
+                  />
+                  <button 
+                    className="action-button load" 
+                    onClick={handleLoadMessageByCode}
+                    disabled={codeInputValue.length < 4}
+                  >
+                    Load
+                  </button>
+                  <button className="action-button cancel" onClick={toggleCodeInput}>
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            <AnimatedTitle 
+              onDoubleClick={handleTitleDoubleClick}
+              stopAnimation={isDebugMode || isDecoded}
+            />
+            
+            <div className="action-buttons top-buttons right-side">
+              <button className="action-button next" onClick={handleNewMessage}>
+                Next Message
+              </button>
+            </div>
+          </div>
           
           <div className="main-content">
             <div className="message-container">
@@ -497,76 +551,36 @@ export function CipherDecoder() {
                 </div>
               )}
             </div>
-
-            <div className="controls">
-              <div className="alphabet">
-                {ALPHABET.split('').map(letter => {
-                  const isUsed = usedLetters.includes(letter);
-                  return (
-                    <button
-                      key={letter}
-                      className={`letter-button 
-                        ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
-                        ${selectedLetter ? 'choose-me' : ''} 
-                        ${isUsed ? 'used' : ''}`}
-                      onClick={() => {
-                        // Only process click if a rune is selected and the letter isn't already used
-                        if (selectedLetter && !isUsed) {
-                          handleReplacementSelect(letter);
-                        }
-                      }}
-                      // Visual disabled state, but keep onClick handler for safety
-                      disabled={!selectedLetter || isUsed}
-                    >
-                      {letter}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="action-buttons">
-                <button className="action-button reset" onClick={handleResetMapping}>
-                  Reset
-                </button>
-                
-                <div className="message-navigation">
-                  {showCodeInput ? (
-                    <div className="code-input-container">
-                      <input 
-                        type="text" 
-                        placeholder="Enter code" 
-                        className="code-input"
-                        value={codeInputValue}
-                        onChange={handleCodeInputChange}
-                        onKeyDown={handleCodeInputKeyDown}
-                        maxLength={4}
-                        autoFocus
-                      />
-                      <button 
-                        className="action-button load" 
-                        onClick={handleLoadMessageByCode}
-                        disabled={codeInputValue.length < 4}
-                      >
-                        Load
-                      </button>
-                      <button className="action-button cancel" onClick={toggleCodeInput}>
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="button-group">
-                      <button className="action-button next" onClick={handleNewMessage}>
-                        Next Message
-                      </button>
-                      <button className="action-button code" onClick={toggleCodeInput}>
-                        Enter Code
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+          </div>
+          
+          {/* Controls Section - Now only for the alphabet */}
+          <div className="controls">
+            <div className="alphabet">
+              {ALPHABET.split('').map(letter => {
+                const isUsed = usedLetters.includes(letter);
+                return (
+                  <button
+                    key={letter}
+                    className={`letter-button 
+                      ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
+                      ${selectedLetter ? 'choose-me' : ''} 
+                      ${isUsed ? 'used' : ''}`}
+                    onClick={() => {
+                      // Only process click if a rune is selected and the letter isn't already used
+                      if (selectedLetter && !isUsed) {
+                        handleReplacementSelect(letter);
+                      }
+                    }}
+                    // Visual disabled state, but keep onClick handler for safety
+                    disabled={!selectedLetter || isUsed}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
             </div>
           </div>
+          
         </div>
       </div>
     </>
