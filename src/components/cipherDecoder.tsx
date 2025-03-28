@@ -32,7 +32,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 };
 
 // Title animation component
-const AnimatedTitle = ({ onDoubleClick }: { onDoubleClick: () => void }) => {
+const AnimatedTitle = ({ onDoubleClick, stopAnimation }: { onDoubleClick: () => void, stopAnimation: boolean }) => {
   const [letters, setLetters] = useState<Array<{char: string, isRunic: boolean}>>(() => {
     const word = "Decoder";
     // Start with all characters as runes
@@ -46,6 +46,23 @@ const AnimatedTitle = ({ onDoubleClick }: { onDoubleClick: () => void }) => {
   const [decodedIndices, setDecodedIndices] = useState<Set<number>>(new Set());
   
   useEffect(() => {
+    // If stopAnimation is true, decode all the letters and stop the animation
+    if (stopAnimation && decodedIndices.size < 7) {
+      setLetters(prev => 
+        prev.map(letter => ({
+          ...letter,
+          isRunic: false
+        }))
+      );
+      setDecodedIndices(new Set([0, 1, 2, 3, 4, 5, 6]));
+      return;
+    }
+    
+    // Don't start a new interval if we're supposed to stop the animation
+    if (stopAnimation) {
+      return;
+    }
+    
     // Slower animation interval (1800ms instead of 800ms)
     const interval = setInterval(() => {
       if (decodedIndices.size >= 7) {
@@ -58,7 +75,7 @@ const AnimatedTitle = ({ onDoubleClick }: { onDoubleClick: () => void }) => {
               isRunic: true
             }))
           );
-        }, 5000);
+        }, 1600);
         return;
       }
       
@@ -103,7 +120,7 @@ const AnimatedTitle = ({ onDoubleClick }: { onDoubleClick: () => void }) => {
     }, 1800);
     
     return () => clearInterval(interval);
-  }, [decodedIndices, letters]);
+  }, [decodedIndices, letters, stopAnimation]);
   
   return (
     <h1 className="animated-title" onDoubleClick={onDoubleClick}>
@@ -281,6 +298,35 @@ export function CipherDecoder() {
     }
   };
 
+  // Calculate the progress of decoding to determine color tint
+  const getDecodeProgress = () => {
+    const uniqueCharsInMessage = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
+    const mappedChars = uniqueCharsInMessage.filter(char => mapping[char]);
+    return mappedChars.length / uniqueCharsInMessage.length;
+  };
+
+  // Calculate the color based on decode progress (blue to reddish-purple)
+  const getSelectionColor = () => {
+    const progress = getDecodeProgress();
+    
+    // Blue RGB: 66, 153, 225 (start)
+    // Reddish-Purple RGB: 187, 85, 219 (end) - more red than the previous purple
+    
+    const r = Math.round(66 + progress * (187 - 66));
+    const g = Math.round(153 + progress * (85 - 153));
+    const b = Math.round(225 + progress * (219 - 225));
+    
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+  
+  // Generate CSS variables for dynamic colors
+  const colorStyle = {
+    '--selection-color': getSelectionColor(), // Purple-tinted selection color
+    '--selection-glow': `0 0 8px ${getSelectionColor()}80`, // Purple-tinted glow with 50% opacity
+    '--mapped-color': '#63b3ed', // Fixed sky blue for mapped letters
+    '--mapped-glow': '0 0 8px rgba(99, 179, 237, 0.6)' // Fixed sky blue glow for mapped letters
+  } as React.CSSProperties;
+
   const triggerConfetti = () => {
     if (confettiCanvasRef.current) {
       const myConfetti = confetti.create(confettiCanvasRef.current, {
@@ -328,8 +374,8 @@ export function CipherDecoder() {
     <>
       <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
       <div className="app-container">
-        <div className="cipher-decoder dark-mode">
-          <AnimatedTitle onDoubleClick={handleTitleDoubleClick} />
+        <div className="cipher-decoder dark-mode" style={colorStyle}>
+          <AnimatedTitle onDoubleClick={handleTitleDoubleClick} stopAnimation={isDecoded} />
           
           {isDebugMode && (
             <div className="debug-mode-indicator">

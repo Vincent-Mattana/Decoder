@@ -27,6 +27,10 @@ body, html {
   color: #e0e0e0;
   box-sizing: border-box;
   overflow: hidden; /* Prevent scrollbars */
+  --selection-color: #4299e1; /* Default blue for selection */
+  --selection-glow: 0 0 8px rgba(66, 153, 225, 0.6); /* Default blue glow for selection */
+  --mapped-color: #63b3ed; /* Default sky blue for mapped letters */
+  --mapped-glow: 0 0 8px rgba(99, 179, 237, 0.6); /* Default blue glow for mapped letters */
 }
 
 .message-container {
@@ -78,47 +82,70 @@ body, html {
   color: #e0e0e0;
 }
 
+.controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.alphabet {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 700px;
+  margin: 1rem auto;
+  padding: 0.5rem;
+}
+
 .letter-button {
-  width: 2.2rem;
-  height: 2.2rem;
-  line-height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 3px;
   padding: 0;
-  text-align: center;
-  border: 1px solid #444;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 2px solid #234876;
   border-radius: 4px;
-  background-color: #2a2a2a;
-  color: #e0e0e0;
+  background-color: #1a202c;
+  color: #a0aec0;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
-/* Add clearer inactive state */
 .letter-button:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
-  background-color: #222;
-  border-color: #333;
+  opacity: 0.5;
 }
 
-/* Only highlight available buttons when a rune is selected */
-.letter-button:not(:disabled):hover {
-  background-color: #444;
-  border-color: #63b3ed;
+.letter-button.choose-me:not(.used):not(:disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.letter-button.selected {
-  border-color: #4299e1;
-  background-color: #1a365d;
-  color: #90cdf4;
+  background-color: #234876;
+  color: white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  border-color: var(--selection-color);
 }
 
 .letter-button.used {
-  position: relative;
-  opacity: 0.7;
+  background-color: #1a365d;
+  color: var(--mapped-color);
+  border-color: var(--mapped-color);
   cursor: not-allowed;
+}
+
+.letter-button.selected {
+  background-color: var(--selection-color);
+  color: white;
+  border-color: white;
+  box-shadow: var(--selection-glow);
 }
 
 .letter-button.used::before {
@@ -383,35 +410,35 @@ h2 {
 
 /* Letter states */
 .letter:hover:not(.mapped) {
-  border-color: #90cdf4;
+  border-color: var(--selection-color);
   transform: translateY(-2px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .letter.selected {
-  border-color: #4299e1;
+  border-color: var(--selection-color);
   background-color: #1a365d;
-  color: #90cdf4;
+  color: var(--selection-color);
 }
 
-/* .letter.mapped is defined above with sky blue color */
+/* Mapped letters use the fixed blue color */
 .letter.mapped {
   opacity: 1;
-  color: #63b3ed !important; /* Sky blue color */
+  color: var(--mapped-color) !important; 
   font-weight: bold;
   font-size: 1.5rem;
-  text-shadow: 0 0 8px rgba(99, 179, 237, 0.6); /* Blue glow */
+  text-shadow: var(--mapped-glow); 
   animation: none !important; /* Stop the orange glow animation */
   background-color: #1a365d; /* Dark blue background for better contrast */
-  border-color: #4299e1; /* Blue border */
+  border-color: var(--mapped-color); /* Blue border */
   cursor: pointer; /* Ensure it's obviously clickable */
 }
 
 /* Add a hover effect to show that mapped runes can be clicked to clear */
 .letter.mapped:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(99, 179, 237, 0.8);
-  border-color: #90cdf4;
+  box-shadow: var(--mapped-glow);
+  border-color: var(--mapped-color);
 }
 
 /* Add a subtle indicator that mapped letters can be reset */
@@ -425,7 +452,7 @@ h2 {
   font-size: 0.8rem;
   line-height: 1rem;
   text-align: center;
-  background-color: #4299e1;
+  background-color: var(--mapped-color);
   color: white;
   border-radius: 50%;
   opacity: 0;
@@ -452,8 +479,8 @@ h2 {
 /* Title styling is already defined above */
 
 .letter.highlight {
-  box-shadow: 0 0 6px 2px rgba(66, 153, 225, 0.6);
-  border-color: #4299e1;
+  box-shadow: var(--selection-glow);
+  border-color: var(--selection-color);
   z-index: 1;
 }
 
@@ -488,19 +515,19 @@ h2 {
 
 .letter.mapped {
   opacity: 1;
-  color: #63b3ed !important; /* Sky blue color */
+  color: var(--mapped-color) !important; /* Sky blue color */
   font-weight: bold;
   font-size: 1.5rem;
-  text-shadow: 0 0 8px rgba(99, 179, 237, 0.6); /* Blue glow */
+  text-shadow: var(--mapped-glow); /* Blue glow */
   animation: none !important; /* Stop the orange glow animation */
   background-color: #1a365d; /* Dark blue background for better contrast */
-  border-color: #4299e1; /* Blue border */
+  border-color: var(--mapped-color); /* Blue border */
   cursor: pointer; /* Ensure it's obviously clickable */
 }
 
 /* Add a hover effect to show that mapped runes can be clicked to clear */
 .letter.mapped:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(99, 179, 237, 0.8);
-  border-color: #90cdf4;
+  box-shadow: var(--mapped-glow);
+  border-color: var(--mapped-color);
 } 
