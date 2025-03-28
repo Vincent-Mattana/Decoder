@@ -147,6 +147,7 @@ export function CipherDecoder() {
   const [codeInputValue, setCodeInputValue] = useState('');
   const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [showSecretUncovered, setShowSecretUncovered] = useState(false);
+  const codeInputRef = useRef<HTMLInputElement>(null);
 
   // Apply dark mode to body and html
   useEffect(() => {
@@ -270,8 +271,30 @@ export function CipherDecoder() {
     setShowCodeInput(!showCodeInput);
     if (!showCodeInput) {
       setCodeInputValue('');
+      // Focus the input field after it appears
+      setTimeout(() => {
+        if (codeInputRef.current) {
+          codeInputRef.current.focus();
+        }
+      }, 10);
     }
   };
+
+  // Handle click outside of code input to close it
+  useEffect(() => {
+    if (!showCodeInput) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (codeInputRef.current && !codeInputRef.current.contains(event.target as Node)) {
+        setShowCodeInput(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCodeInput]);
 
   const handleResetMapping = () => {
     // Clear any selected letter when resetting
@@ -403,6 +426,8 @@ export function CipherDecoder() {
     // If Enter key is pressed and the code input is valid, load the message
     if (e.key === 'Enter' && codeInputValue.length === 4) {
       handleLoadMessageByCode();
+    } else if (e.key === 'Escape') {
+      setShowCodeInput(false);
     }
   };
 
@@ -472,34 +497,21 @@ export function CipherDecoder() {
               <button className="action-button reset" onClick={handleResetMapping}>
                 Reset
               </button>
-              <button className="action-button code" onClick={toggleCodeInput}>
-                Enter Code
-              </button>
-              
-              {/* Code input container positioned beneath the buttons */}
-              {showCodeInput && (
-                <div className="code-input-container">
-                  <input 
-                    type="text" 
-                    placeholder="Enter code" 
-                    className="code-input"
-                    value={codeInputValue}
-                    onChange={handleCodeInputChange}
-                    onKeyDown={handleCodeInputKeyDown}
-                    maxLength={4}
-                    autoFocus
-                  />
-                  <button 
-                    className="action-button load" 
-                    onClick={handleLoadMessageByCode}
-                    disabled={codeInputValue.length < 4}
-                  >
-                    Load
-                  </button>
-                  <button className="action-button cancel" onClick={toggleCodeInput}>
-                    Cancel
-                  </button>
-                </div>
+              {!showCodeInput ? (
+                <button className="action-button code" onClick={toggleCodeInput}>
+                  Enter Code
+                </button>
+              ) : (
+                <input 
+                  ref={codeInputRef}
+                  type="text" 
+                  placeholder="Code" 
+                  className="code-input inline"
+                  value={codeInputValue}
+                  onChange={handleCodeInputChange}
+                  onKeyDown={handleCodeInputKeyDown}
+                  maxLength={4}
+                />
               )}
             </div>
           </div>

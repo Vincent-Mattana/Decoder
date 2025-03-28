@@ -1,3 +1,16 @@
+/*
+ * CipherMessages.ts
+ * 
+ * Rules for cipher messages:
+ * 1. All messages must be uppercase
+ * 2. Messages should be meaningful and self-contained
+ * 3. Messages must not exceed 100 characters in length
+ * 4. No special characters allowed, only letters, numbers and spaces
+ * 5. Messages should have educational or inspirational content
+ * 6. Each message has a unique ID and code
+ * 7. Messages are encoded using either Caesar or Atbash ciphers
+ */
+
 import { Message } from './types';
 
 // Function to generate a unique 4-character code
@@ -86,7 +99,7 @@ export const ALL_MESSAGES: Message[] = [
   { id: 63, text: "THE PAIN YOU FEEL TODAY WILL BE THE STRENGTH YOU FEEL TOMORROW", shift: 0, cipherType: 'atbash', code: generateUniqueCode(63) },
   { id: 64, text: "KEEP YOUR FACE ALWAYS TOWARD THE SUNSHINE AND SHADOWS WILL FALL BEHIND YOU", shift: 3, cipherType: 'caesar', code: generateUniqueCode(64) },
   { id: 65, text: "WE MAY ENCOUNTER MANY DEFEATS BUT WE MUST NOT BE DEFEATED", shift: 0, cipherType: 'atbash', code: generateUniqueCode(65) },
-  { id: 66, text: "WHAT LIES BEHIND YOU AND WHAT LIES IN FRONT OF YOU PALES IN COMPARISON TO WHAT LIES INSIDE OF YOU", shift: 7, cipherType: 'caesar', code: generateUniqueCode(66) },
+  { id: 66, text: "WHAT LIES INSIDE OF YOU IS MORE IMPORTANT THAN WHAT LIES BEHIND OR IN FRONT OF YOU", shift: 7, cipherType: 'caesar', code: generateUniqueCode(66) },
   { id: 67, text: "NOTHING IS IMPOSSIBLE THE WORD ITSELF SAYS I AM POSSIBLE", shift: 10, cipherType: 'caesar', code: generateUniqueCode(67) },
   { id: 68, text: "THE BEST PREPARATION FOR TOMORROW IS DOING YOUR BEST TODAY", shift: 0, cipherType: 'atbash', code: generateUniqueCode(68) },
   { id: 69, text: "LIFE IS WHAT HAPPENS WHEN YOU ARE BUSY MAKING OTHER PLANS", shift: 5, cipherType: 'caesar', code: generateUniqueCode(69) },
@@ -110,34 +123,34 @@ export const ALL_MESSAGES: Message[] = [
   { id: 87, text: "THE BEST REVENGE IS MASSIVE SUCCESS AND LIVING WELL", shift: 11, cipherType: 'caesar', code: generateUniqueCode(87) },
   { id: 88, text: "YOU ARE NEVER TOO OLD TO SET ANOTHER GOAL OR TO DREAM A NEW DREAM", shift: 0, cipherType: 'atbash', code: generateUniqueCode(88) },
   { id: 89, text: "THE WAY TO GET STARTED IS TO QUIT TALKING AND BEGIN DOING", shift: 7, cipherType: 'caesar', code: generateUniqueCode(89) },
-  { id: 90, text: "OUR GREATEST WEAKNESS LIES IN GIVING UP THE MOST CERTAIN WAY TO SUCCEED IS ALWAYS TO TRY JUST ONE MORE TIME", shift: 0, cipherType: 'atbash', code: generateUniqueCode(90) },
-  { id: 91, text: "THE TWO MOST IMPORTANT DAYS IN YOUR LIFE ARE THE DAY YOU ARE BORN AND THE DAY YOU FIND OUT WHY", shift: 5, cipherType: 'caesar', code: generateUniqueCode(91) },
+  { id: 90, text: "SUCCESS COMES FROM PERSISTENCE THE SECRET IS TO NEVER GIVE UP AND ALWAYS TRY ONE MORE TIME", shift: 0, cipherType: 'atbash', code: generateUniqueCode(90) },
+  { id: 91, text: "YOUR TWO MOST IMPORTANT DAYS ARE WHEN YOU ARE BORN AND WHEN YOU FIND OUT WHY", shift: 5, cipherType: 'caesar', code: generateUniqueCode(91) },
   { id: 92, text: "EVEN THE DARKEST NIGHT WILL END AND THE SUN WILL RISE", shift: 9, cipherType: 'caesar', code: generateUniqueCode(92) },
-  { id: 93, text: "HAPPINESS CAN BE FOUND EVEN IN THE DARKEST OF TIMES IF ONE ONLY REMEMBERS TO TURN ON THE LIGHT", shift: 0, cipherType: 'atbash', code: generateUniqueCode(93) },
+  { id: 93, text: "HAPPINESS CAN BE FOUND EVEN IN THE DARKEST TIMES IF ONE REMEMBERS TO FIND LIGHT", shift: 0, cipherType: 'atbash', code: generateUniqueCode(93) },
   { id: 94, text: "WHATEVER YOU ARE BE A GOOD ONE AND GIVE IT YOUR BEST", shift: 4, cipherType: 'caesar', code: generateUniqueCode(94) },
   { id: 95, text: "LEARNING NEVER EXHAUSTS THE MIND IT ONLY EXPANDS IT", shift: 0, cipherType: 'atbash', code: generateUniqueCode(95) },
-  { id: 96, text: "THE PESSIMIST SEES DIFFICULTY IN EVERY OPPORTUNITY THE OPTIMIST SEES OPPORTUNITY IN EVERY DIFFICULTY", shift: 6, cipherType: 'caesar', code: generateUniqueCode(96) },
-  { id: 97, text: "SOMETIMES YOU WILL NEVER KNOW THE VALUE OF A MOMENT UNTIL IT BECOMES A MEMORY", shift: 8, cipherType: 'caesar', code: generateUniqueCode(97) },
+  { id: 96, text: "OPTIMISTS FIND OPPORTUNITY IN DIFFICULTY WHILE PESSIMISTS FIND DIFFICULTY IN OPPORTUNITY", shift: 6, cipherType: 'caesar', code: generateUniqueCode(96) },
+  { id: 97, text: "THE VALUE OF A MOMENT IS OFTEN REALIZED ONLY AFTER IT BECOMES A MEMORY", shift: 8, cipherType: 'caesar', code: generateUniqueCode(97) },
   { id: 98, text: "YOU HAVE WITHIN YOU RIGHT NOW EVERYTHING YOU NEED TO SUCCEED", shift: 0, cipherType: 'atbash', code: generateUniqueCode(98) },
   { id: 99, text: "THE BIGGEST ADVENTURE YOU CAN TAKE IS TO LIVE THE LIFE OF YOUR DREAMS", shift: 3, cipherType: 'caesar', code: generateUniqueCode(99) },
-  { id: 100, text: "DIFFICULTIES IN YOUR LIFE DO NOT COME TO DESTROY YOU BUT TO HELP YOU REALIZE YOUR HIDDEN POTENTIAL", shift: 0, cipherType: 'atbash', code: generateUniqueCode(100) },
+  { id: 100, text: "DIFFICULTIES DO NOT COME TO DESTROY YOU BUT TO HELP YOU DISCOVER YOUR HIDDEN POTENTIAL", shift: 0, cipherType: 'atbash', code: generateUniqueCode(100) },
   { id: 101, text: "STRIVE NOT TO BE A SUCCESS BUT RATHER TO BE OF VALUE TO OTHERS", shift: 7, cipherType: 'caesar', code: generateUniqueCode(101) },
   { id: 102, text: "THE ONLY IMPOSSIBLE JOURNEY IS THE ONE YOU NEVER BEGIN", shift: 5, cipherType: 'caesar', code: generateUniqueCode(102) },
   { id: 103, text: "WHAT YOU THINK YOU BECOME WHAT YOU FEEL YOU ATTRACT WHAT YOU IMAGINE YOU CREATE", shift: 0, cipherType: 'atbash', code: generateUniqueCode(103) },
   { id: 104, text: "DO WHAT YOU CAN WITH ALL YOU HAVE WHEREVER YOU ARE RIGHT NOW", shift: 4, cipherType: 'caesar', code: generateUniqueCode(104) },
   { id: 105, text: "THE HARDER YOU WORK FOR SOMETHING THE GREATER YOU WILL FEEL WHEN YOU ACHIEVE IT", shift: 0, cipherType: 'atbash', code: generateUniqueCode(105) },
   { id: 106, text: "JUST ONE SMALL POSITIVE THOUGHT IN THE MORNING CAN CHANGE YOUR WHOLE DAY", shift: 6, cipherType: 'caesar', code: generateUniqueCode(106) },
-  { id: 107, text: "EVERYTHING YOU CAN IMAGINE IS REAL IF YOU BELIEVE IN YOURSELF", shift: 8, cipherType: 'caesar', code: generateUniqueCode(107) },
+  { id: 107, text: "IMAGINATION CREATES REALITY WHEN YOU TRULY BELIEVE IN YOURSELF", shift: 8, cipherType: 'caesar', code: generateUniqueCode(107) },
   { id: 108, text: "YOUR TIME IS LIMITED SO DO NOT WASTE IT LIVING SOMEONE ELSE'S LIFE", shift: 0, cipherType: 'atbash', code: generateUniqueCode(108) },
   { id: 109, text: "ONLY THOSE WHO DARE TO FAIL GREATLY CAN EVER ACHIEVE GREATLY", shift: 3, cipherType: 'caesar', code: generateUniqueCode(109) },
   { id: 110, text: "HAPPINESS IS NOT BY CHANCE BUT BY CHOICE EACH AND EVERY DAY", shift: 0, cipherType: 'atbash', code: generateUniqueCode(110) },
   { id: 111, text: "THE HARDER I WORK THE MORE LUCK I SEEM TO HAVE IN MY LIFE", shift: 5, cipherType: 'caesar', code: generateUniqueCode(111) },
-  { id: 112, text: "THE QUESTION IS NOT WHO IS GOING TO LET ME IT IS WHO IS GOING TO STOP ME", shift: 9, cipherType: 'caesar', code: generateUniqueCode(112) },
+  { id: 112, text: "THE QUESTION IS NOT WHO WILL LET ME IT IS WHO WILL STOP ME", shift: 9, cipherType: 'caesar', code: generateUniqueCode(112) },
   { id: 113, text: "THERE IS NO ELEVATOR TO SUCCESS YOU HAVE TO TAKE THE STAIRS", shift: 0, cipherType: 'atbash', code: generateUniqueCode(113) },
   { id: 114, text: "COURAGE IS RESISTANCE TO FEAR MASTERY OF FEAR NOT ABSENCE OF FEAR", shift: 7, cipherType: 'caesar', code: generateUniqueCode(114) },
   { id: 115, text: "WHEN ONE DOOR OF HAPPINESS CLOSES ANOTHER OPENS FOR YOU", shift: 0, cipherType: 'atbash', code: generateUniqueCode(115) },
   { id: 116, text: "WORK HARD IN SILENCE LET YOUR SUCCESS BE YOUR NOISE", shift: 4, cipherType: 'caesar', code: generateUniqueCode(116) },
-  { id: 117, text: "BE YOURSELF EVERYONE ELSE IS ALREADY TAKEN AND UNIQUE", shift: 10, cipherType: 'caesar', code: generateUniqueCode(117) },
+  { id: 117, text: "BE YOURSELF BECAUSE EVERYONE ELSE IS ALREADY TAKEN", shift: 10, cipherType: 'caesar', code: generateUniqueCode(117) },
   { id: 118, text: "LIFE SHRINKS OR EXPANDS IN PROPORTION TO ONE'S COURAGE", shift: 0, cipherType: 'atbash', code: generateUniqueCode(118) },
   { id: 119, text: "SUCCESS IS WALKING FROM FAILURE TO FAILURE WITH NO LOSS OF ENTHUSIASM", shift: 6, cipherType: 'caesar', code: generateUniqueCode(119) },
   { id: 120, text: "THE ONLY LIMIT TO OUR REALIZATION OF TOMORROW IS OUR DOUBTS OF TODAY", shift: 0, cipherType: 'atbash', code: generateUniqueCode(120) },
@@ -152,12 +165,12 @@ export const ALL_MESSAGES: Message[] = [
   { id: 129, text: "DO NOT JUDGE EACH DAY BY THE HARVEST YOU REAP BUT BY THE SEEDS THAT YOU PLANT", shift: 4, cipherType: 'caesar', code: generateUniqueCode(129) },
   { id: 130, text: "HARD WORK BEATS TALENT WHEN TALENT DOES NOT WORK HARD ENOUGH", shift: 0, cipherType: 'atbash', code: generateUniqueCode(130) },
   { id: 131, text: "IF THE WIND WILL NOT SERVE TAKE TO THE OARS AND ROW", shift: 6, cipherType: 'caesar', code: generateUniqueCode(131) },
-  { id: 132, text: "THE ONLY PERSON YOU ARE DESTINED TO BECOME IS THE PERSON YOU DECIDE TO BE", shift: 3, cipherType: 'caesar', code: generateUniqueCode(132) },
+  { id: 132, text: "YOU BECOME THE PERSON YOU DECIDE TO BE NOT THE PERSON OTHERS WANT", shift: 3, cipherType: 'caesar', code: generateUniqueCode(132) },
   { id: 133, text: "THE MOUNTAINS ARE CALLING AND I MUST GO TO EXPLORE THEM", shift: 0, cipherType: 'atbash', code: generateUniqueCode(133) },
   { id: 134, text: "DO WHAT IS RIGHT NOT WHAT IS EASY NOR WHAT IS POPULAR", shift: 7, cipherType: 'caesar', code: generateUniqueCode(134) },
   { id: 135, text: "HAVE THE COURAGE TO FOLLOW YOUR HEART AND INTUITION", shift: 0, cipherType: 'atbash', code: generateUniqueCode(135) },
   { id: 136, text: "THE WHOLE SECRET OF A SUCCESSFUL LIFE IS TO FIND OUT WHAT IS ONE'S DESTINY TO DO", shift: 5, cipherType: 'caesar', code: generateUniqueCode(136) },
-  { id: 137, text: "NEVER LET THE FEAR OF STRIKING OUT KEEP YOU FROM PLAYING THE GAME", shift: 11, cipherType: 'caesar', code: generateUniqueCode(137) },
+  { id: 137, text: "NEVER LET FEAR STOP YOU FROM PLAYING THE GAME AND TAKING CHANCES", shift: 11, cipherType: 'caesar', code: generateUniqueCode(137) },
   { id: 138, text: "LIFE IS REALLY SIMPLE BUT WE INSIST ON MAKING IT COMPLICATED", shift: 0, cipherType: 'atbash', code: generateUniqueCode(138) },
   { id: 139, text: "YESTERDAY IS GONE TOMORROW HAS NOT YET COME WE HAVE ONLY TODAY", shift: 4, cipherType: 'caesar', code: generateUniqueCode(139) },
   { id: 140, text: "FORMAL EDUCATION WILL MAKE YOU A LIVING SELF EDUCATION WILL MAKE YOU A FORTUNE", shift: 0, cipherType: 'atbash', code: generateUniqueCode(140) },
