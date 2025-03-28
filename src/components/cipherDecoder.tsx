@@ -427,12 +427,8 @@ export function CipherDecoder() {
       {/* Show the SECRET UNCOVERED notification with overlay */}
       {showSecretUncovered && (
         <div className={`secret-uncovered-notification ${showSecretUncovered ? 'show' : ''}`}>
-          {!isDebugMode && (
-            <>
-              <div className="secret-uncovered-title">Secret Mode Activated!</div>
-              <div className="secret-uncovered-overlay"></div>
-            </>
-          )}
+          <div className="secret-uncovered-overlay"></div>
+          <div className="secret-uncovered-text">SECRET UNCOVERED</div>
         </div>
       )}
     
