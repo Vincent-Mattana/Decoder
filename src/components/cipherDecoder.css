@@ -93,13 +93,19 @@ body, html {
 
 .title-letter.runic {
   font-family: 'Noto Sans Runic', 'Segoe UI Historic', 'Code2001', 'Junicode', 'Andagii', sans-serif;
-  animation: runeGlow 2s infinite;
   color: #ffa500;
+  transform-origin: center;
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
 }
 
 .title-letter.standard {
   color: #63b3ed;
   text-shadow: 0 0 8px rgba(99, 179, 237, 0.6);
+}
+
+.title-letter.runic:hover {
+  animation: runeGlow 1.5s infinite;
+  animation-timing-function: ease-in-out;
 }
 
 .title-letter.runic,
@@ -165,9 +171,18 @@ body, html {
 }
 
 [data-symbol-set="runic"] .letter:not(.mapped) {
-  animation: runeGlow 2s infinite;
   color: #ffa500;
   font-family: 'Noto Sans Runic', 'Segoe UI Historic', 'Code2001', 'Junicode', 'Andagii', sans-serif;
+  transform-origin: center;
+  position: relative;
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
+}
+
+/* Apply glow animation to both hovered and highlighted runes */
+[data-symbol-set="runic"] .letter:hover:not(.mapped),
+[data-symbol-set="runic"] .letter.highlight:not(.mapped) {
+  animation: runeGlow 1.5s infinite;
+  animation-timing-function: ease-in-out;
 }
 
 .message-word {
@@ -543,9 +558,22 @@ body, html {
 }
 
 @keyframes runeGlow {
-  0% { text-shadow: 0 0 8px rgba(255, 165, 0, 0.4); }
-  50% { text-shadow: 0 0 12px rgba(255, 165, 0, 0.7); }
-  100% { text-shadow: 0 0 8px rgba(255, 165, 0, 0.4); }
+  0% { 
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+    transform: scale(1);
+  }
+  33% { 
+    text-shadow: 0 0 18px rgba(255, 165, 0, 0.8), 0 0 5px rgba(255, 120, 0, 0.4);
+    transform: scale(1.08);
+  }
+  66% { 
+    text-shadow: 0 0 14px rgba(255, 165, 0, 0.7), 0 0 8px rgba(255, 100, 0, 0.5);
+    transform: scale(1.04);
+  }
+  100% { 
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+    transform: scale(1);
+  }
 }
 
 /* Responsive adjustments */
