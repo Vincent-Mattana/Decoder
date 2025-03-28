@@ -35,27 +35,75 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 const AnimatedTitle = ({ onDoubleClick }: { onDoubleClick: () => void }) => {
   const [letters, setLetters] = useState<Array<{char: string, isRunic: boolean}>>(() => {
     const word = "Decoder";
+    // Start with all characters as runes
     return word.split('').map(char => ({
       char,
-      isRunic: Math.random() > 0.5
+      isRunic: true
     }));
   });
   
+  // Track which letters have been "decoded"
+  const [decodedIndices, setDecodedIndices] = useState<Set<number>>(new Set());
+  
   useEffect(() => {
+    // Slower animation interval (1800ms instead of 800ms)
     const interval = setInterval(() => {
-      setLetters(prev => {
-        const updated = [...prev];
-        const randomIndex = Math.floor(Math.random() * updated.length);
-        updated[randomIndex] = {
-          ...updated[randomIndex],
-          isRunic: !updated[randomIndex].isRunic
-        };
-        return updated;
-      });
-    }, 800);
+      if (decodedIndices.size >= 7) {
+        // All letters decoded, reset after a brief pause
+        setTimeout(() => {
+          setDecodedIndices(new Set());
+          setLetters(prev => 
+            prev.map(letter => ({
+              ...letter,
+              isRunic: true
+            }))
+          );
+        }, 5000);
+        return;
+      }
+      
+      // Find indices that haven't been decoded yet
+      const availableIndices = Array.from({ length: 7 }, (_, i) => i)
+        .filter(idx => !decodedIndices.has(idx));
+      
+      if (availableIndices.length > 0) {
+        // Pick a random index from available indices
+        const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+        const selectedChar = letters[randomIndex].char.toLowerCase();
+        
+        // Create a set to hold indices to update
+        const indicesToUpdate = new Set<number>([randomIndex]);
+        
+        // Find all instances of the selected character and reveal them together
+        letters.forEach((letter, idx) => {
+          if (letter.char.toLowerCase() === selectedChar && !decodedIndices.has(idx)) {
+            indicesToUpdate.add(idx);
+          }
+        });
+        
+        // Update the letters
+        setLetters(prev => {
+          const updated = [...prev];
+          Array.from(indicesToUpdate).forEach(idx => {
+            updated[idx] = {
+              ...updated[idx],
+              isRunic: false
+            };
+          });
+          return updated;
+        });
+        
+        // Add all updated indices to the decoded set
+        setDecodedIndices(prev => {
+          const newSet = new Set(prev);
+          Array.from(indicesToUpdate).forEach(idx => newSet.add(idx));
+          return newSet;
+        });
+      }
+    }, 1800);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [decodedIndices, letters]);
   
   return (
     <h1 className="animated-title" onDoubleClick={onDoubleClick}>
@@ -132,6 +180,20 @@ export function CipherDecoder() {
     // If the same letter is clicked again, deselect it
     if (selectedLetter === letter) {
       setSelectedLetter(null);
+      return;
+    }
+    
+    // If this letter is already mapped, clear the mapping when clicked
+    if (mapping[letter]) {
+      // Create new mapping object without this letter
+      const newMapping = { ...mapping };
+      delete newMapping[letter];
+      setMapping(newMapping);
+      
+      // Check if decoding state has changed
+      if (isDecoded) {
+        setIsDecoded(false);
+      }
       return;
     }
     
