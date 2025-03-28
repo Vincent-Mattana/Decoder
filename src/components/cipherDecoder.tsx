@@ -143,6 +143,9 @@ export function CipherDecoder() {
   const [hoveredLetter, setHoveredLetter] = useState<string | null>(null);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [codeInputValue, setCodeInputValue] = useState('');
+  const [isCodeVisible, setIsCodeVisible] = useState(false);
 
   // Apply dark mode to body and html
   useEffect(() => {
@@ -244,6 +247,29 @@ export function CipherDecoder() {
     setCurrentMessage(messages[nextIndex]);
     setMapping({});
     setIsDecoded(false);
+    setShowCodeInput(false);
+    setCodeInputValue('');
+  };
+
+  const handleLoadMessageByCode = () => {
+    const foundMessage = messages.find(m => m.code?.toUpperCase() === codeInputValue.toUpperCase());
+    if (foundMessage) {
+      setCurrentMessage(foundMessage);
+      setMapping({});
+      setIsDecoded(false);
+      setSelectedLetter(null);
+      setShowCodeInput(false);
+      setCodeInputValue('');
+    } else {
+      alert('Invalid code. Please try again.');
+    }
+  };
+
+  const toggleCodeInput = () => {
+    setShowCodeInput(!showCodeInput);
+    if (!showCodeInput) {
+      setCodeInputValue('');
+    }
   };
 
   const handleResetMapping = () => {
@@ -365,6 +391,29 @@ export function CipherDecoder() {
     }
   };
 
+  const handleCodeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Convert to uppercase and store
+    setCodeInputValue(e.target.value.toUpperCase());
+  };
+
+  const handleCodeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // If Enter key is pressed and the code input is valid, load the message
+    if (e.key === 'Enter' && codeInputValue.length === 4) {
+      handleLoadMessageByCode();
+    }
+  };
+
+  const toggleCodeVisibility = () => {
+    setIsCodeVisible(!isCodeVisible);
+    
+    // If code is being shown, set a timer to hide it after 3 seconds
+    if (!isCodeVisible) {
+      setTimeout(() => {
+        setIsCodeVisible(false);
+      }, 3000);
+    }
+  };
+
   return (
     <>
       <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
@@ -412,6 +461,19 @@ export function CipherDecoder() {
                 </React.Fragment>
               ))}
             </div>
+            {currentMessage.code && (
+              <div className="message-code">
+                Message Code: 
+                <div className="code-container">
+                  <div className="code-reveal-icon" onClick={toggleCodeVisibility}>
+                    {isCodeVisible ? "✓" : "👁️"}
+                  </div>
+                  <span className={`code-display ${isCodeVisible ? 'visible' : ''}`}>
+                    {currentMessage.code}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="controls">
@@ -444,9 +506,42 @@ export function CipherDecoder() {
               <button className="action-button reset" onClick={handleResetMapping}>
                 Reset
               </button>
-              <button className="action-button next" onClick={handleNewMessage}>
-                Next Message
-              </button>
+              
+              <div className="message-navigation">
+                {showCodeInput ? (
+                  <div className="code-input-container">
+                    <input 
+                      type="text" 
+                      placeholder="Enter code" 
+                      className="code-input"
+                      value={codeInputValue}
+                      onChange={handleCodeInputChange}
+                      onKeyDown={handleCodeInputKeyDown}
+                      maxLength={4}
+                      autoFocus
+                    />
+                    <button 
+                      className="action-button load" 
+                      onClick={handleLoadMessageByCode}
+                      disabled={codeInputValue.length < 4}
+                    >
+                      Load
+                    </button>
+                    <button className="action-button cancel" onClick={toggleCodeInput}>
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="button-group">
+                    <button className="action-button next" onClick={handleNewMessage}>
+                      Next Message
+                    </button>
+                    <button className="action-button code" onClick={toggleCodeInput}>
+                      Enter Code
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

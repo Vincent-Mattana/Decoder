@@ -420,6 +420,136 @@ h2 {
   background-color: #9b2c2c;
 }
 
+.action-button.code {
+  background-color: #2d3748;
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.action-button.code:hover {
+  background-color: #4a5568;
+}
+
+.action-button.load {
+  background-color: #38a169;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+}
+
+.action-button.load:hover {
+  background-color: #2f855a;
+}
+
+.action-button.load:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.action-button.cancel {
+  background-color: #718096;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+}
+
+.action-button.cancel:hover {
+  background-color: #4a5568;
+}
+
+.message-code {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #a0aec0;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.message-code:hover {
+  opacity: 1;
+}
+
+.code-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.code-reveal-icon {
+  cursor: pointer;
+  color: #718096;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #2d3748;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.code-reveal-icon:hover {
+  color: #cbd5e0;
+  background-color: #4a5568;
+}
+
+.code-display {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  color: #ffa500;
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.7);
+  user-select: all;
+  cursor: pointer;
+  letter-spacing: 1px;
+  display: none;
+}
+
+.code-display.visible {
+  display: inline;
+}
+
+.code-input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.code-input {
+  padding: 0.5rem;
+  border: 2px solid #4a5568;
+  background-color: #2d3748;
+  color: white;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-align: center;
+  width: 6rem;
+  text-transform: uppercase;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
+}
+
+.message-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+}
+
 /* Letter states */
 .letter:hover:not(.mapped) {
   border-color: var(--selection-color);
