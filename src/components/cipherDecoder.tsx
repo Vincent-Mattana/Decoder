@@ -450,118 +450,120 @@ export function CipherDecoder() {
             </>
           )}
           
-          <div className="message-container">
-            <h2>Secret Message:</h2>
-            <div className={`message encoded ${isDecoded ? 'message-solved' : ''}`} data-symbol-set="runic">
-              {/* Show SOLVED stamp when message is decoded */}
-              {isDecoded && !showSecretUncovered && (
-                <div className="solved-stamp">SOLVED</div>
-              )}
-              {encodedMessage.split(' ').map((word, wordIndex) => (
-                <React.Fragment key={`word-${wordIndex}`}>
-                  <div className="message-word">
-                    {word.split('').map((char, charIndex) => (
-                      <span
-                        key={`${wordIndex}-${charIndex}`}
-                        className={`letter 
-                          ${selectedLetter === char ? 'selected' : ''} 
-                          ${mapping[char] ? 'mapped' : ''} 
-                          ${(hoveredLetter === char || selectedLetter === char) ? 'highlight' : ''}
-                          ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
-                        onClick={() => handleLetterSelect(char)}
-                        onMouseEnter={() => handleLetterHover(char)}
-                        onMouseLeave={() => handleLetterHover(null)}
-                      >
-                        {mapping[char] ? mapping[char] : char}
-                      </span>
-                    ))}
-                  </div>
-                  {wordIndex < encodedMessage.split(' ').length - 1 && (
-                    <span className="space-character">&nbsp;</span>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            {currentMessage.code && (
-              <div className="message-code">
-                Message Code: 
-                <div className="code-container">
-                  <div className="code-reveal-icon" onClick={toggleCodeVisibility}>
-                    {isCodeVisible ? "✓" : "👁️"}
-                  </div>
-                  <span className={`code-display ${isCodeVisible ? 'visible' : ''}`}>
-                    {currentMessage.code}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="controls">
-            <div className="alphabet">
-              {ALPHABET.split('').map(letter => {
-                const isUsed = usedLetters.includes(letter);
-                return (
-                  <button
-                    key={letter}
-                    className={`letter-button 
-                      ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
-                      ${selectedLetter ? 'choose-me' : ''} 
-                      ${isUsed ? 'used' : ''}`}
-                    onClick={() => {
-                      // Only process click if a rune is selected and the letter isn't already used
-                      if (selectedLetter && !isUsed) {
-                        handleReplacementSelect(letter);
-                      }
-                    }}
-                    // Visual disabled state, but keep onClick handler for safety
-                    disabled={!selectedLetter || isUsed}
-                  >
-                    {letter}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="action-buttons">
-              <button className="action-button reset" onClick={handleResetMapping}>
-                Reset
-              </button>
-              
-              <div className="message-navigation">
-                {showCodeInput ? (
-                  <div className="code-input-container">
-                    <input 
-                      type="text" 
-                      placeholder="Enter code" 
-                      className="code-input"
-                      value={codeInputValue}
-                      onChange={handleCodeInputChange}
-                      onKeyDown={handleCodeInputKeyDown}
-                      maxLength={4}
-                      autoFocus
-                    />
-                    <button 
-                      className="action-button load" 
-                      onClick={handleLoadMessageByCode}
-                      disabled={codeInputValue.length < 4}
-                    >
-                      Load
-                    </button>
-                    <button className="action-button cancel" onClick={toggleCodeInput}>
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="button-group">
-                    <button className="action-button next" onClick={handleNewMessage}>
-                      Next Message
-                    </button>
-                    <button className="action-button code" onClick={toggleCodeInput}>
-                      Enter Code
-                    </button>
-                  </div>
+          <div className="main-content">
+            <div className="message-container">
+              <h2>Secret Message:</h2>
+              <div className={`message encoded ${isDecoded ? 'message-solved' : ''}`} data-symbol-set="runic">
+                {/* Show SOLVED stamp when message is decoded */}
+                {isDecoded && !showSecretUncovered && (
+                  <div className="solved-stamp">SOLVED</div>
                 )}
+                {encodedMessage.split(' ').map((word, wordIndex) => (
+                  <React.Fragment key={`word-${wordIndex}`}>
+                    <div className="message-word">
+                      {word.split('').map((char, charIndex) => (
+                        <span
+                          key={`${wordIndex}-${charIndex}`}
+                          className={`letter 
+                            ${selectedLetter === char ? 'selected' : ''} 
+                            ${mapping[char] ? 'mapped' : ''} 
+                            ${(hoveredLetter === char || selectedLetter === char) ? 'highlight' : ''}
+                            ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
+                          onClick={() => handleLetterSelect(char)}
+                          onMouseEnter={() => handleLetterHover(char)}
+                          onMouseLeave={() => handleLetterHover(null)}
+                        >
+                          {mapping[char] ? mapping[char] : char}
+                        </span>
+                      ))}
+                    </div>
+                    {wordIndex < encodedMessage.split(' ').length - 1 && (
+                      <span className="space-character">&nbsp;</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+              {currentMessage.code && (
+                <div className="message-code">
+                  Message Code: 
+                  <div className="code-container">
+                    <div className="code-reveal-icon" onClick={toggleCodeVisibility}>
+                      {isCodeVisible ? "✓" : "👁️"}
+                    </div>
+                    <span className={`code-display ${isCodeVisible ? 'visible' : ''}`}>
+                      {currentMessage.code}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="controls">
+              <div className="alphabet">
+                {ALPHABET.split('').map(letter => {
+                  const isUsed = usedLetters.includes(letter);
+                  return (
+                    <button
+                      key={letter}
+                      className={`letter-button 
+                        ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
+                        ${selectedLetter ? 'choose-me' : ''} 
+                        ${isUsed ? 'used' : ''}`}
+                      onClick={() => {
+                        // Only process click if a rune is selected and the letter isn't already used
+                        if (selectedLetter && !isUsed) {
+                          handleReplacementSelect(letter);
+                        }
+                      }}
+                      // Visual disabled state, but keep onClick handler for safety
+                      disabled={!selectedLetter || isUsed}
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="action-buttons">
+                <button className="action-button reset" onClick={handleResetMapping}>
+                  Reset
+                </button>
+                
+                <div className="message-navigation">
+                  {showCodeInput ? (
+                    <div className="code-input-container">
+                      <input 
+                        type="text" 
+                        placeholder="Enter code" 
+                        className="code-input"
+                        value={codeInputValue}
+                        onChange={handleCodeInputChange}
+                        onKeyDown={handleCodeInputKeyDown}
+                        maxLength={4}
+                        autoFocus
+                      />
+                      <button 
+                        className="action-button load" 
+                        onClick={handleLoadMessageByCode}
+                        disabled={codeInputValue.length < 4}
+                      >
+                        Load
+                      </button>
+                      <button className="action-button cancel" onClick={toggleCodeInput}>
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="button-group">
+                      <button className="action-button next" onClick={handleNewMessage}>
+                        Next Message
+                      </button>
+                      <button className="action-button code" onClick={toggleCodeInput}>
+                        Enter Code
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

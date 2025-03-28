@@ -9,12 +9,15 @@ body, html {
   background-color: #1a1a1a;
   color: #e0e0e0;
   overflow: hidden;
+  border: none;
+  outline: none;
 }
 
 .dark-mode {
   background-color: #1a1a1a;
   color: #e0e0e0;
   border: none;
+  outline: none;
 }
 
 /* Main container */
@@ -22,13 +25,14 @@ body, html {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0 1rem;
   text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
   height: 100vh;
   font-family: 'Courier New', Courier, monospace;
   background-color: #1a1a1a;
@@ -43,19 +47,59 @@ body, html {
   outline: none;
 }
 
+/* Root element fixes */
+#root {
+  background-color: #1a1a1a;
+  height: 100%;
+  width: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+/* App container */
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
+  overflow: hidden;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* Title */
 .animated-title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
-  position: relative;
+  margin-bottom: 2rem;
+  position: absolute;
+  top: 8vh;
   cursor: pointer;
   user-select: none;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .title-letter {
   display: inline-block;
   padding: 0 0.1rem;
   transition: all 0.3s ease;
+}
+
+.title-letter.runic {
+  font-family: 'Noto Sans Runic', 'Segoe UI Historic', 'Code2001', 'Junicode', 'Andagii', sans-serif;
+  animation: runeGlow 2s infinite;
+  color: #ffa500;
+}
+
+.title-letter.standard {
+  color: #63b3ed;
+  text-shadow: 0 0 8px rgba(99, 179, 237, 0.6);
 }
 
 .title-letter.runic,
@@ -76,16 +120,36 @@ body, html {
   font-weight: bold;
 }
 
+/* Main contents container - create a wrapper for the message and keyboard */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%); /* Slightly higher than true center */
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
 /* Message container */
 .message-container {
   width: 100%;
-  margin: 1.5rem 0;
+  margin: 0 0 3rem 0;
   padding: 1.5rem;
   border-radius: 8px;
   position: relative;
   background-color: #2a2a2a;
   border: 1px solid #444;
   box-sizing: border-box;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .message {
@@ -97,12 +161,20 @@ body, html {
   gap: 0.5rem 0.25rem;
   padding: 0.5rem;
   max-width: 100%;
+  min-height: 80px;
+}
+
+[data-symbol-set="runic"] .letter:not(.mapped) {
+  animation: runeGlow 2s infinite;
+  color: #ffa500;
+  font-family: 'Noto Sans Runic', 'Segoe UI Historic', 'Code2001', 'Junicode', 'Andagii', sans-serif;
 }
 
 .message-word {
   display: flex;
   white-space: nowrap;
   margin-bottom: 0.25rem;
+  min-height: 1.8rem;
 }
 
 .space-character {
@@ -201,6 +273,7 @@ body, html {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  min-height: 150px;
 }
 
 .alphabet {
@@ -289,6 +362,7 @@ body, html {
   justify-content: space-between;
   width: 100%;
   margin-top: 1.5rem;
+  min-height: 40px;
 }
 
 .action-button {
@@ -358,6 +432,7 @@ body, html {
   height: 100%;
   pointer-events: none;
   z-index: 999;
+  background-color: transparent;
 }
 
 /* Success message - hide */
@@ -471,4 +546,44 @@ body, html {
   0% { text-shadow: 0 0 8px rgba(255, 165, 0, 0.4); }
   50% { text-shadow: 0 0 12px rgba(255, 165, 0, 0.7); }
   100% { text-shadow: 0 0 8px rgba(255, 165, 0, 0.4); }
+}
+
+/* Responsive adjustments */
+@media (max-height: 700px) {
+  .animated-title {
+    top: 5vh;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+  }
+  
+  .main-content {
+    transform: translate(-50%, -48%);
+  }
+  
+  .message-container {
+    margin: 0 0 2rem 0;
+    min-height: 180px;
+  }
+}
+
+@media (max-height: 600px) {
+  .animated-title {
+    top: 3vh;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+  }
+  
+  .main-content {
+    transform: translate(-50%, -49%);
+  }
+  
+  .message-container {
+    margin: 0 0 1.5rem 0;
+    min-height: 160px;
+    padding: 1rem;
+  }
+  
+  .controls {
+    min-height: 130px;
+  }
 } 
