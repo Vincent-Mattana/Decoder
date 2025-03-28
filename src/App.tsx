@@ -1,10 +1,10 @@
-import { CaesarCipher } from './components/CaesarCipher'
+import { CipherDecoder } from './components/cipherDecoder'
 import './App.css'
 
 function App() {
   return (
     <div className="app">
-      <CaesarCipher />
+      <CipherDecoder />
     </div>
   )
 }
