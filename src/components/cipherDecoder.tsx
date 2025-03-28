@@ -143,7 +143,6 @@ export function CipherDecoder() {
   const [hoveredLetter, setHoveredLetter] = useState<string | null>(null);
   const [isDebugMode, setIsDebugMode] = useState(false);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [showCodeInput, setShowCodeInput] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState('');
   const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [showSecretUncovered, setShowSecretUncovered] = useState(false);
@@ -249,7 +248,6 @@ export function CipherDecoder() {
     setCurrentMessage(messages[nextIndex]);
     setMapping({});
     setIsDecoded(false);
-    setShowCodeInput(false);
     setCodeInputValue('');
   };
 
@@ -260,41 +258,34 @@ export function CipherDecoder() {
       setMapping({});
       setIsDecoded(false);
       setSelectedLetter(null);
-      setShowCodeInput(false);
       setCodeInputValue('');
     } else {
       alert('Invalid code. Please try again.');
     }
   };
 
-  const toggleCodeInput = () => {
-    setShowCodeInput(!showCodeInput);
-    if (!showCodeInput) {
-      setCodeInputValue('');
-      // Focus the input field after it appears
-      setTimeout(() => {
-        if (codeInputRef.current) {
-          codeInputRef.current.focus();
-        }
-      }, 10);
+  const handleCodeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Convert to uppercase and store
+    setCodeInputValue(e.target.value.toUpperCase());
+  };
+
+  const handleCodeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // If Enter key is pressed and the code input is valid, load the message
+    if (e.key === 'Enter' && codeInputValue.length === 4) {
+      handleLoadMessageByCode();
     }
   };
 
-  // Handle click outside of code input to close it
-  useEffect(() => {
-    if (!showCodeInput) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (codeInputRef.current && !codeInputRef.current.contains(event.target as Node)) {
-        setShowCodeInput(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showCodeInput]);
+  const toggleCodeVisibility = () => {
+    setIsCodeVisible(!isCodeVisible);
+    
+    // If code is being shown, set a timer to hide it after 3 seconds
+    if (!isCodeVisible) {
+      setTimeout(() => {
+        setIsCodeVisible(false);
+      }, 3000);
+    }
+  };
 
   const handleResetMapping = () => {
     // Clear any selected letter when resetting
@@ -417,31 +408,6 @@ export function CipherDecoder() {
     }
   };
 
-  const handleCodeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert to uppercase and store
-    setCodeInputValue(e.target.value.toUpperCase());
-  };
-
-  const handleCodeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // If Enter key is pressed and the code input is valid, load the message
-    if (e.key === 'Enter' && codeInputValue.length === 4) {
-      handleLoadMessageByCode();
-    } else if (e.key === 'Escape') {
-      setShowCodeInput(false);
-    }
-  };
-
-  const toggleCodeVisibility = () => {
-    setIsCodeVisible(!isCodeVisible);
-    
-    // If code is being shown, set a timer to hide it after 3 seconds
-    if (!isCodeVisible) {
-      setTimeout(() => {
-        setIsCodeVisible(false);
-      }, 3000);
-    }
-  };
-
   // Function to trigger the "SECRET UNCOVERED" notification
   const triggerSecretUncoveredNotification = () => {
     setShowSecretUncovered(true);
@@ -541,24 +507,19 @@ export function CipherDecoder() {
           <div className="keyboard">
             <div className="keyboard-content">
               <div className="keyboard-buttons left-side">
+                <input 
+                  ref={codeInputRef}
+                  type="text" 
+                  placeholder="Enter code..." 
+                  className="code-input permanent"
+                  value={codeInputValue}
+                  onChange={handleCodeInputChange}
+                  onKeyDown={handleCodeInputKeyDown}
+                  maxLength={4}
+                />
                 <button className="action-button reset" onClick={handleResetMapping}>
                   Reset
                 </button>
-                <button className="action-button code" onClick={toggleCodeInput}>
-                  {showCodeInput ? "Cancel" : "Enter Code"}
-                </button>
-                {showCodeInput && (
-                  <input 
-                    ref={codeInputRef}
-                    type="text" 
-                    placeholder="Code" 
-                    className="code-input integrated"
-                    value={codeInputValue}
-                    onChange={handleCodeInputChange}
-                    onKeyDown={handleCodeInputKeyDown}
-                    maxLength={4}
-                  />
-                )}
               </div>
               
               <div className="alphabet">
