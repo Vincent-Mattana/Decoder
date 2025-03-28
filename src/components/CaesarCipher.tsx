@@ -12,39 +12,36 @@ interface Message {
 }
 
 const SAMPLE_MESSAGES: Message[] = [
-  { id: 1, text: "HELLO WORLD", shift: 3, cipherType: 'caesar' },
+  { id: 1, text: "SAY YES AND THE FUN BEGINS", shift: 3, cipherType: 'caesar' },
   { id: 2, text: "THIS IS A SECRET MESSAGE", shift: 5, cipherType: 'caesar' },
-  { id: 3, text: "CAESAR CIPHER GAME", shift: 7, cipherType: 'caesar' },
+  { id: 3, text: "THE OLD MAN AND THE SEA", shift: 7, cipherType: 'caesar' },
   { id: 4, text: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", shift: 4, cipherType: 'caesar' },
   { id: 5, text: "TO BE OR NOT TO BE THAT IS THE QUESTION", shift: 6, cipherType: 'caesar' },
   { id: 6, text: "AN APPLE A DAY KEEPS THE DOCTOR AWAY", shift: 8, cipherType: 'caesar' },
   { id: 7, text: "LOOK AT THE STARS AND DREAM OF TOMORROW", shift: 2, cipherType: 'caesar' },
   { id: 8, text: "DO OR DO NOT THERE IS NO TRY", shift: 9, cipherType: 'caesar' },
-  { id: 9, text: "A JOURNEY OF A THOUSAND MILES BEGINS WITH A SINGLE STEP", shift: 3, cipherType: 'caesar' },
+  { id: 9, text: "A JOURNEY OF A THOUSAND MILES BEGINS WITH ONE BIG STEP", shift: 3, cipherType: 'caesar' },
   { id: 10, text: "ALL THAT GLITTERS IS NOT GOLD", shift: 5, cipherType: 'caesar' },
   { id: 11, text: "THE EARLY BIRD CATCHES THE WORM", shift: 7, cipherType: 'caesar' },
   { id: 12, text: "EVERY CLOUD HAS A SILVER LINING", shift: 4, cipherType: 'caesar' },
   { id: 13, text: "IF AT FIRST YOU DO NOT SUCCEED TRY TRY AGAIN", shift: 6, cipherType: 'caesar' },
-  // Atbash cipher quotes
-  { id: 14, text: "MIRROR MIRROR ON THE WALL", shift: 0, cipherType: 'atbash' },
-  { id: 15, text: "REVERSE THE ALPHABET GAME", shift: 0, cipherType: 'atbash' },
-  { id: 16, text: "ATBASH IS AN ANCIENT CIPHER", shift: 0, cipherType: 'atbash' },
-  { id: 17, text: "FROM A TO Z AND Z TO A", shift: 0, cipherType: 'atbash' },
-  // Adding more quotes
+  { id: 14, text: "MIRROR MIRROR ON THE WALL WHO IS THE FAIREST ONE OF ALL", shift: 0, cipherType: 'atbash' },
+  { id: 15, text: "REVERSE THE ALPHABET AND YOU CAN WIN THE GAME", shift: 0, cipherType: 'atbash' },
+  { id: 16, text: "THE OLD MAN HAS THE KEY FOR THE CIPHER", shift: 0, cipherType: 'atbash' },
+  { id: 17, text: "FROM A TO Z AND Z TO A HOW YOU WIN", shift: 0, cipherType: 'atbash' },
   { id: 18, text: "LIFE IS WHAT HAPPENS WHEN YOU ARE BUSY MAKING OTHER PLANS", shift: 5, cipherType: 'caesar' },
   { id: 19, text: "THE ONLY WAY TO DO GREAT WORK IS TO LOVE WHAT YOU DO", shift: 7, cipherType: 'caesar' },
   { id: 20, text: "IN THE END WE ONLY REGRET THE CHANCES WE DIDNT TAKE", shift: 3, cipherType: 'caesar' },
   { id: 21, text: "BE THE CHANGE YOU WISH TO SEE IN THE WORLD", shift: 8, cipherType: 'caesar' },
   { id: 22, text: "YOU MISS ONE HUNDRED PERCENT OF THE SHOTS YOU DONT TAKE", shift: 4, cipherType: 'caesar' },
-  { id: 23, text: "KNOWLEDGE IS POWER", shift: 10, cipherType: 'caesar' },
-  { id: 24, text: "TIME IS MONEY", shift: 12, cipherType: 'caesar' },
+  { id: 23, text: "THE KEY FOR NEW AGE AND OLD ERA", shift: 10, cipherType: 'caesar' },
+  { id: 24, text: "USE THE MAP AND GET THE BAG NOW", shift: 12, cipherType: 'caesar' },
   { id: 25, text: "TWO HEADS ARE BETTER THAN ONE", shift: 6, cipherType: 'caesar' },
-  { id: 26, text: "ACTIONS SPEAK LOUDER THAN WORDS", shift: 9, cipherType: 'caesar' },
+  { id: 26, text: "ACTIONS SPEAK LOUDER THAN ANY OLD WORDS", shift: 9, cipherType: 'caesar' },
   { id: 27, text: "NEVER PUT OFF UNTIL TOMORROW WHAT YOU CAN DO TODAY", shift: 5, cipherType: 'caesar' },
-  // More Atbash cipher quotes
-  { id: 28, text: "READING BACKWARDS IS A SKILL", shift: 0, cipherType: 'atbash' },
-  { id: 29, text: "FLIP THE SCRIPT AND DECODE", shift: 0, cipherType: 'atbash' },
-  { id: 30, text: "OPPOSITE DAY EVERY DAY", shift: 0, cipherType: 'atbash' },
+  { id: 28, text: "OUR DAY AND OUR WAY HOW WE SEE THE WORLD", shift: 0, cipherType: 'atbash' },
+  { id: 29, text: "FLIP THE SCRIPT AND DECODE HOW YOU SEE FIT", shift: 0, cipherType: 'atbash' },
+  { id: 30, text: "ANY NEW DAY CAN END THE OLD WAY", shift: 0, cipherType: 'atbash' },
 ];
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -140,17 +137,17 @@ export function CaesarCipher() {
     setIsDecoded(false);
   };
 
+  const handleResetMapping = () => {
+    setMapping({});
+    setIsDecoded(false);
+  };
+
   const encodedMessage = encodeMessage(
     currentMessage.text, 
     currentMessage.shift, 
     currentMessage.cipherType || 'caesar'
   );
   
-  const decodedMessage = encodedMessage
-    .split('')
-    .map(char => mapping[char] || char)
-    .join('');
-
   // Function to check if message is fully decoded
   const checkIfDecoded = (newMapping: Record<string, string>) => {
     const uniqueCharsInMessage = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
@@ -237,7 +234,7 @@ export function CaesarCipher() {
       </div>
       
       <div className="message-container">
-        <h2>Encoded Message:</h2>
+        <h2>Secret Message:</h2>
         <div className="message encoded">
           {encodedMessage.split('').map((char, index) => (
             <span
@@ -246,18 +243,9 @@ export function CaesarCipher() {
               onClick={() => handleLetterSelect(char)}
             >
               {char}
-            </span>
-          ))}
-        </div>
-
-        <h2>Your Decoding:</h2>
-        <div className="message decoded">
-          {decodedMessage.split('').map((char, index) => (
-            <span
-              key={index}
-              className={`letter ${mapping[encodedMessage[index]] ? 'mapped' : ''}`}
-            >
-              {char}
+              {mapping[char] && (
+                <span className="decoded-overlay">{mapping[char]}</span>
+              )}
             </span>
           ))}
         </div>
@@ -284,9 +272,14 @@ export function CaesarCipher() {
           })}
         </div>
 
-        <button className="new-message" onClick={handleNewMessage}>
-          Next Message
-        </button>
+        <div className="action-buttons">
+          <button className="action-button reset" onClick={handleResetMapping}>
+            Reset
+          </button>
+          <button className="action-button next" onClick={handleNewMessage}>
+            Next Message
+          </button>
+        </div>
       </div>
     </div>
   );
