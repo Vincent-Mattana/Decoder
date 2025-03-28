@@ -117,20 +117,22 @@ The user interface has been optimized for an intuitive and focused experience:
 2. **Middle Section**:
    - "Secret Message:" title is centered horizontally at the top of the message container
    - Message code eye emoji appears inline directly next to the title for easy access
-   - Secret message container is vertically centered between the title and keyboard
+   - Secret message container is precisely positioned at 45% from the top of the viewport, creating perfect vertical alignment between the title and keyboard
    - Message uses large runic symbols (2.25rem font size) for better visibility
    - Gray background fits tightly around the message content
    - Message container adapts to content size
    - Spaces between words have double-width gaps (1rem) for improved readability
 
 3. **Bottom Section**:
-   - Alphabet keyboard is fixed at the bottom of the screen
+   - Alphabet keyboard is fixed to the bottom of the screen
    - Used for selecting letters to decode the message
+   - Consistent position across all screen sizes with responsive padding adjustments
 
 4. **Responsive Design**:
-   - Layout adapts to different screen sizes
+   - Layout adapts to different screen sizes with carefully tuned breakpoints
    - CSS variables for dynamic spacing
    - Mobile-specific optimizations
+   - Element positions adjust proportionally on smaller screens
 
 ## User Flow
 
