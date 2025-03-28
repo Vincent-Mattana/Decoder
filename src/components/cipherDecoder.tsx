@@ -128,6 +128,14 @@ export function CipherDecoder() {
 
   const handleLetterSelect = (letter: string) => {
     if (letter === ' ') return;
+    
+    // If the same letter is clicked again, deselect it
+    if (selectedLetter === letter) {
+      setSelectedLetter(null);
+      return;
+    }
+    
+    // Otherwise select the new letter
     setSelectedLetter(letter);
     if (firstInteraction) {
       setFirstInteraction(false);
@@ -139,6 +147,7 @@ export function CipherDecoder() {
   };
 
   const handleReplacementSelect = (letter: string) => {
+    // Safety check - ensure a rune is selected before allowing replacement
     if (!selectedLetter) return;
     
     const newMapping = { ...mapping, [selectedLetter]: letter };
@@ -154,6 +163,9 @@ export function CipherDecoder() {
       setIsDebugMode(false);
     }
     
+    // Clear any selected letter to prevent issues when switching messages
+    setSelectedLetter(null);
+    
     const nextIndex = (messages.findIndex(m => m.id === currentMessage.id) + 1) % messages.length;
     setCurrentMessage(messages[nextIndex]);
     setMapping({});
@@ -161,6 +173,8 @@ export function CipherDecoder() {
   };
 
   const handleResetMapping = () => {
+    // Clear any selected letter when resetting
+    setSelectedLetter(null);
     setMapping({});
     setIsDecoded(false);
   };
@@ -170,7 +184,8 @@ export function CipherDecoder() {
     // Toggle debug mode and set debug message
     setIsDebugMode(prev => {
       if (!prev) {
-        // When enabling, set the debug message
+        // When enabling, set the debug message and clear any selection
+        setSelectedLetter(null);
         setCurrentMessage(DEBUG_MESSAGE);
         setMapping({});
         setIsDecoded(false);
@@ -250,81 +265,86 @@ export function CipherDecoder() {
   return (
     <>
       <canvas ref={confettiCanvasRef} className="confetti-canvas"></canvas>
-      <div className="cipher-decoder dark-mode">
-        <AnimatedTitle onDoubleClick={handleTitleDoubleClick} />
-        
-        {isDebugMode && (
-          <div className="debug-mode-indicator">
-            DEBUG MODE
-          </div>
-        )}
-        
-        {isDecoded && (
-          <div className="success-message">
-            🎉 Congratulations! You've decoded the message! 🎉
-          </div>
-        )}
-        
-        <div className="message-container">
-          <h2>Secret Message:</h2>
-          <div className="message encoded" data-symbol-set="runic">
-            {encodedMessage.split(' ').map((word, wordIndex) => (
-              <React.Fragment key={`word-${wordIndex}`}>
-                <div className="message-word">
-                  {word.split('').map((char, charIndex) => (
-                    <span
-                      key={`${wordIndex}-${charIndex}`}
-                      className={`letter 
-                        ${selectedLetter === char ? 'selected' : ''} 
-                        ${mapping[char] ? 'mapped' : ''} 
-                        ${(hoveredLetter === char || selectedLetter === char) ? 'highlight' : ''}
-                        ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
-                      onClick={() => handleLetterSelect(char)}
-                      onMouseEnter={() => handleLetterHover(char)}
-                      onMouseLeave={() => handleLetterHover(null)}
-                    >
-                      {mapping[char] ? mapping[char] : char}
-                    </span>
-                  ))}
-                </div>
-                {wordIndex < encodedMessage.split(' ').length - 1 && (
-                  <span className="space-character">&nbsp;</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        <div className="controls">
-          <div className="alphabet">
-            {ALPHABET.split('').map(letter => {
-              const isUsed = usedLetters.includes(letter);
-              return (
-                <button
-                  key={letter}
-                  className={`letter-button 
-                    ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
-                    ${selectedLetter ? 'choose-me' : ''} 
-                    ${isUsed ? 'used' : ''}`}
-                  onClick={() => {
-                    if (!selectedLetter || isUsed) return;
-                    handleReplacementSelect(letter);
-                  }}
-                  disabled={!selectedLetter || isUsed}
-                >
-                  {letter}
-                </button>
-              );
-            })}
+      <div className="app-container">
+        <div className="cipher-decoder dark-mode">
+          <AnimatedTitle onDoubleClick={handleTitleDoubleClick} />
+          
+          {isDebugMode && (
+            <div className="debug-mode-indicator">
+              DEBUG MODE
+            </div>
+          )}
+          
+          {isDecoded && (
+            <div className="success-message">
+              🎉 Congratulations! You've decoded the message! 🎉
+            </div>
+          )}
+          
+          <div className="message-container">
+            <h2>Secret Message:</h2>
+            <div className="message encoded" data-symbol-set="runic">
+              {encodedMessage.split(' ').map((word, wordIndex) => (
+                <React.Fragment key={`word-${wordIndex}`}>
+                  <div className="message-word">
+                    {word.split('').map((char, charIndex) => (
+                      <span
+                        key={`${wordIndex}-${charIndex}`}
+                        className={`letter 
+                          ${selectedLetter === char ? 'selected' : ''} 
+                          ${mapping[char] ? 'mapped' : ''} 
+                          ${(hoveredLetter === char || selectedLetter === char) ? 'highlight' : ''}
+                          ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
+                        onClick={() => handleLetterSelect(char)}
+                        onMouseEnter={() => handleLetterHover(char)}
+                        onMouseLeave={() => handleLetterHover(null)}
+                      >
+                        {mapping[char] ? mapping[char] : char}
+                      </span>
+                    ))}
+                  </div>
+                  {wordIndex < encodedMessage.split(' ').length - 1 && (
+                    <span className="space-character">&nbsp;</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
 
-          <div className="action-buttons">
-            <button className="action-button reset" onClick={handleResetMapping}>
-              Reset
-            </button>
-            <button className="action-button next" onClick={handleNewMessage}>
-              Next Message
-            </button>
+          <div className="controls">
+            <div className="alphabet">
+              {ALPHABET.split('').map(letter => {
+                const isUsed = usedLetters.includes(letter);
+                return (
+                  <button
+                    key={letter}
+                    className={`letter-button 
+                      ${selectedLetter && mapping[selectedLetter] === letter ? 'selected' : ''} 
+                      ${selectedLetter ? 'choose-me' : ''} 
+                      ${isUsed ? 'used' : ''}`}
+                    onClick={() => {
+                      // Only process click if a rune is selected and the letter isn't already used
+                      if (selectedLetter && !isUsed) {
+                        handleReplacementSelect(letter);
+                      }
+                    }}
+                    // Visual disabled state, but keep onClick handler for safety
+                    disabled={!selectedLetter || isUsed}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="action-buttons">
+              <button className="action-button reset" onClick={handleResetMapping}>
+                Reset
+              </button>
+              <button className="action-button next" onClick={handleNewMessage}>
+                Next Message
+              </button>
+            </div>
           </div>
         </div>
       </div>
