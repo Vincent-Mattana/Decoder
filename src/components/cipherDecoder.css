@@ -10,6 +10,13 @@ body, html {
   overflow: hidden; /* Prevent scrollbars */
 }
 
+/* Apply styles to dark-mode class */
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: none;
+}
+
 .cipher-decoder {
   width: 100%;
   max-width: 1200px; /* Increased max-width to use more horizontal space */
@@ -23,7 +30,7 @@ body, html {
   align-items: center;
   height: 100vh;
   font-family: 'Courier New', Courier, monospace;
-  background-color: #1a1a1a;
+  background-color: #1a1a1a; /* Match body background color */
   color: #e0e0e0;
   box-sizing: border-box;
   overflow: hidden; /* Prevent scrollbars */
@@ -31,6 +38,8 @@ body, html {
   --selection-glow: 0 0 8px rgba(66, 153, 225, 0.6); /* Default blue glow for selection */
   --mapped-color: #63b3ed; /* Default sky blue for mapped letters */
   --mapped-glow: 0 0 8px rgba(99, 179, 237, 0.6); /* Default blue glow for mapped letters */
+  border: none; /* Remove any border */
+  outline: none; /* Remove any outline */
 }
 
 .message-container {
@@ -370,6 +379,9 @@ h2 {
   width: 100%;
   height: 100%;
   position: relative;
+  background-color: #1a1a1a;
+  border: none;
+  outline: none;
 }
 
 /* Ensure action buttons don't push content down too far */

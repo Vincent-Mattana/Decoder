@@ -44,6 +44,8 @@ const AnimatedTitle = ({ onDoubleClick, stopAnimation }: { onDoubleClick: () => 
   
   // Track which letters have been "decoded"
   const [decodedIndices, setDecodedIndices] = useState<Set<number>>(new Set());
+  // Track if the title is fully decoded
+  const [isFullyDecoded, setIsFullyDecoded] = useState(false);
   
   useEffect(() => {
     // If stopAnimation is true, decode all the letters and stop the animation
@@ -55,27 +57,20 @@ const AnimatedTitle = ({ onDoubleClick, stopAnimation }: { onDoubleClick: () => 
         }))
       );
       setDecodedIndices(new Set([0, 1, 2, 3, 4, 5, 6]));
+      setIsFullyDecoded(true);
       return;
     }
     
     // Don't start a new interval if we're supposed to stop the animation
-    if (stopAnimation) {
+    if (stopAnimation || isFullyDecoded) {
       return;
     }
     
     // Slower animation interval (1800ms instead of 800ms)
     const interval = setInterval(() => {
       if (decodedIndices.size >= 7) {
-        // All letters decoded, reset after a brief pause
-        setTimeout(() => {
-          setDecodedIndices(new Set());
-          setLetters(prev => 
-            prev.map(letter => ({
-              ...letter,
-              isRunic: true
-            }))
-          );
-        }, 1600);
+        // All letters decoded, don't reset anymore (stop the cycle)
+        setIsFullyDecoded(true);
         return;
       }
       
@@ -120,7 +115,7 @@ const AnimatedTitle = ({ onDoubleClick, stopAnimation }: { onDoubleClick: () => 
     }, 1800);
     
     return () => clearInterval(interval);
-  }, [decodedIndices, letters, stopAnimation]);
+  }, [decodedIndices, letters, stopAnimation, isFullyDecoded]);
   
   return (
     <h1 className="animated-title" onDoubleClick={onDoubleClick}>
