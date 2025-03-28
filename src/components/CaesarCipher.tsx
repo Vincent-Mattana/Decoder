@@ -25,18 +25,49 @@ const SAMPLE_MESSAGES: Message[] = [
   { id: 11, text: "THE EARLY BIRD CATCHES THE WORM", shift: 7, cipherType: 'caesar' },
   { id: 12, text: "EVERY CLOUD HAS A SILVER LINING", shift: 4, cipherType: 'caesar' },
   { id: 13, text: "IF AT FIRST YOU DO NOT SUCCEED TRY TRY AGAIN", shift: 6, cipherType: 'caesar' },
-  // Adding messages with Atbash cipher
+  // Atbash cipher quotes
   { id: 14, text: "MIRROR MIRROR ON THE WALL", shift: 0, cipherType: 'atbash' },
   { id: 15, text: "REVERSE THE ALPHABET GAME", shift: 0, cipherType: 'atbash' },
   { id: 16, text: "ATBASH IS AN ANCIENT CIPHER", shift: 0, cipherType: 'atbash' },
   { id: 17, text: "FROM A TO Z AND Z TO A", shift: 0, cipherType: 'atbash' },
+  // Adding more quotes
+  { id: 18, text: "LIFE IS WHAT HAPPENS WHEN YOU ARE BUSY MAKING OTHER PLANS", shift: 5, cipherType: 'caesar' },
+  { id: 19, text: "THE ONLY WAY TO DO GREAT WORK IS TO LOVE WHAT YOU DO", shift: 7, cipherType: 'caesar' },
+  { id: 20, text: "IN THE END WE ONLY REGRET THE CHANCES WE DIDNT TAKE", shift: 3, cipherType: 'caesar' },
+  { id: 21, text: "BE THE CHANGE YOU WISH TO SEE IN THE WORLD", shift: 8, cipherType: 'caesar' },
+  { id: 22, text: "YOU MISS ONE HUNDRED PERCENT OF THE SHOTS YOU DONT TAKE", shift: 4, cipherType: 'caesar' },
+  { id: 23, text: "KNOWLEDGE IS POWER", shift: 10, cipherType: 'caesar' },
+  { id: 24, text: "TIME IS MONEY", shift: 12, cipherType: 'caesar' },
+  { id: 25, text: "TWO HEADS ARE BETTER THAN ONE", shift: 6, cipherType: 'caesar' },
+  { id: 26, text: "ACTIONS SPEAK LOUDER THAN WORDS", shift: 9, cipherType: 'caesar' },
+  { id: 27, text: "NEVER PUT OFF UNTIL TOMORROW WHAT YOU CAN DO TODAY", shift: 5, cipherType: 'caesar' },
+  // More Atbash cipher quotes
+  { id: 28, text: "READING BACKWARDS IS A SKILL", shift: 0, cipherType: 'atbash' },
+  { id: 29, text: "FLIP THE SCRIPT AND DECODE", shift: 0, cipherType: 'atbash' },
+  { id: 30, text: "OPPOSITE DAY EVERY DAY", shift: 0, cipherType: 'atbash' },
 ];
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+// Function to shuffle an array (for randomizing messages)
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
 export function CaesarCipher() {
-  const [messages] = useState<Message[]>(SAMPLE_MESSAGES);
-  const [currentMessage, setCurrentMessage] = useState<Message>(messages[0]);
+  // Shuffle messages and store in state
+  const [messages] = useState<Message[]>(() => shuffleArray(SAMPLE_MESSAGES));
+  // Start with a random message
+  const [currentMessage, setCurrentMessage] = useState<Message>(() => {
+    // Pick a random index from the shuffled messages
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    return messages[randomIndex];
+  });
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [isDecoded, setIsDecoded] = useState(false);
