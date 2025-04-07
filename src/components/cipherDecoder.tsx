@@ -1,9 +1,11 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import './cipherDecoder.css';
 import React from 'react';
 import { CipherType } from './types';
 import { ALL_MESSAGES } from './CipherMessages.ts';
+
+// --- Constants and Utility Functions ---
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -12,6 +14,35 @@ const SYMBOL_SETS = {
   standard: ALPHABET,
   runic: 'ᚠᚡᚢᚣᚤᚥᚦᚧᚨᚩᚪᚫᚬᚭᚮᚯᚰᚱᚲᚳᚴᚵᚶᚷᚸᚹᚺᚻ'
 };
+
+// Encode message function (Defined outside component for stability)
+const encodeMessage = (text: string, shift: number, type: CipherType = 'caesar'): string => {
+    // Always use runic symbols for encoding
+    const symbolAlphabet = SYMBOL_SETS.runic;
+    
+    if (type === 'atbash') {
+      return text
+        .split('')
+        .map(char => {
+          if (char === ' ') return ' ';
+          const index = ALPHABET.indexOf(char);
+          if (index === -1) return char;
+          return symbolAlphabet[25 - index] || SYMBOL_SETS.standard[25 - index];
+        })
+        .join('');
+    }
+    
+    // Default to Caesar cipher
+    return text
+      .split('')
+      .map(char => {
+        if (char === ' ') return ' ';
+        const index = ALPHABET.indexOf(char);
+        if (index === -1) return char;
+        return symbolAlphabet[(index + shift) % 26] || SYMBOL_SETS.standard[(index + shift) % 26];
+      })
+      .join('');
+  };
 
 // Debug message for secret mode
 const DEBUG_MESSAGE = {
@@ -131,6 +162,7 @@ const AnimatedTitle = ({ onDoubleClick, stopAnimation }: { onDoubleClick: () => 
 };
 
 export function CipherDecoder() {
+  // --- State Declarations ---
   const [messages] = useState<typeof ALL_MESSAGES>(() => shuffleArray(ALL_MESSAGES));
   const [currentMessage, setCurrentMessage] = useState<typeof ALL_MESSAGES[0]>(() => {
     const randomIndex = Math.floor(Math.random() * messages.length);
@@ -148,6 +180,109 @@ export function CipherDecoder() {
   const [showSecretUncovered, setShowSecretUncovered] = useState(false);
   const codeInputRef = useRef<HTMLInputElement>(null);
 
+  // --- Memoized Values & Callbacks (Define BEFORE effects that use them) ---
+
+  // Calculate used letters for the alphabet selection
+  const usedLetters = useMemo(() => Object.values(mapping), [mapping]);
+
+  // Memoize encoded message
+  const encodedMessage = useMemo(() => encodeMessage(
+    currentMessage.text,
+    currentMessage.shift,
+    currentMessage.cipherType || 'caesar'
+  ), [currentMessage]); // encodeMessage is stable (defined outside)
+
+  // Memoize confetti trigger
+  const triggerConfetti = useCallback(() => {
+    if (confettiCanvasRef.current) {
+      const myConfetti = confetti.create(confettiCanvasRef.current, {
+        resize: true,
+        useWorker: true
+      });
+      
+      const end = Date.now() + 2000;
+      const colors = ['#1a365d', '#2c5282', '#2b6cb0', '#90cdf4', '#48bb78', '#9ae6b4'];
+      
+      (function frame() {
+        myConfetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        
+        myConfetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+        
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+      
+      setTimeout(() => {
+        myConfetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: colors
+        });
+      }, 1500);
+    }
+  }, []); // confettiCanvasRef is stable
+
+  // Memoize notification trigger
+  const triggerSecretUncoveredNotification = useCallback(() => {
+    setShowSecretUncovered(true);
+    setTimeout(() => {
+      setShowSecretUncovered(false);
+    }, 4000);
+  }, []); // setShowSecretUncovered is stable
+
+  // Memoize decoding check function
+  const checkIfDecoded = useCallback((newMapping: Record<string, string>) => {
+    const uniqueCharsInMessage = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
+    // Avoid division by zero if message is empty or only spaces
+    if (uniqueCharsInMessage.length === 0) return; 
+    const allCharsMapped = uniqueCharsInMessage.every(char => newMapping[char]);
+
+    const originalWithoutSpaces = currentMessage.text.replace(/ /g, '');
+    const decodedWithNewMapping = encodedMessage
+      .split('')
+      .map(char => char === ' ' ? ' ' : newMapping[char] || char)
+      .join('')
+      .replace(/ /g, '');
+
+    const correctlyDecoded = allCharsMapped && decodedWithNewMapping === originalWithoutSpaces;
+
+    if (correctlyDecoded && !isDecoded) {
+      setIsDecoded(true);
+      triggerConfetti();
+      triggerSecretUncoveredNotification();
+    }
+  }, [encodedMessage, currentMessage.text, isDecoded, triggerConfetti, triggerSecretUncoveredNotification, setIsDecoded]); // Added stable setIsDecoded dependency
+
+  // Memoize replacement handler
+  const handleReplacementSelect = useCallback((letter: string) => {
+    // Check if letter is already used before proceeding
+    if (!selectedLetter || usedLetters.includes(letter)) return;
+
+    const newMapping = { ...mapping, [selectedLetter]: letter };
+    setMapping(newMapping);
+    setSelectedLetter(null);
+
+    // Use timeout to ensure state update before check
+    setTimeout(() => checkIfDecoded(newMapping), 100);
+  }, [selectedLetter, mapping, checkIfDecoded, usedLetters, setMapping, setSelectedLetter]); // Added stable dependencies
+
+
+  // --- Effects ---
+
   // Apply dark mode to body and html
   useEffect(() => {
     document.body.classList.add('dark-mode');
@@ -159,36 +294,41 @@ export function CipherDecoder() {
     };
   }, []);
 
-  // Calculate used letters for the alphabet selection
-  const usedLetters = useMemo(() => Object.values(mapping), [mapping]);
+  // Handle keyboard input for letter replacement (Refactored: No longer depends on handleReplacementSelect directly)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only proceed if a rune is selected and the event target isn't an input field
+      if (selectedLetter && document.activeElement?.tagName !== 'INPUT') {
+        const key = event.key.toUpperCase();
+        // Check if the pressed key is a letter in the alphabet AND not already used
+        if (ALPHABET.includes(key) && !usedLetters.includes(key)) {
+           // Perform the replacement logic directly
+           const newMapping = { ...mapping, [selectedLetter]: key };
+           setMapping(newMapping);
+           setSelectedLetter(null); // Deselect rune
+           // Use timeout to ensure state update before check
+           setTimeout(() => checkIfDecoded(newMapping), 100);
+        }
+      }
+    };
 
-  // Encode message based on cipher type
-  const encodeMessage = (text: string, shift: number, type: CipherType = 'caesar'): string => {
-    // Always use runic symbols for encoding
-    const symbolAlphabet = SYMBOL_SETS.runic;
-    
-    if (type === 'atbash') {
-      return text
-        .split('')
-        .map(char => {
-          if (char === ' ') return ' ';
-          const index = ALPHABET.indexOf(char);
-          if (index === -1) return char;
-          return symbolAlphabet[25 - index] || SYMBOL_SETS.standard[25 - index];
-        })
-        .join('');
+    // Add event listener only when a letter is selected
+    if (selectedLetter) {
+      window.addEventListener('keydown', handleKeyDown);
     }
-    
-    return text
-      .split('')
-      .map(char => {
-        if (char === ' ') return ' ';
-        const index = ALPHABET.indexOf(char);
-        if (index === -1) return char;
-        return symbolAlphabet[(index + shift) % 26] || SYMBOL_SETS.standard[(index + shift) % 26];
-      })
-      .join('');
-  };
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+    // Dependencies now include state/setters/callbacks used directly inside handleKeyDown
+  }, [selectedLetter, mapping, usedLetters, setMapping, setSelectedLetter, checkIfDecoded]);
+  
+
+  // --- Other Handlers ---
+  
+  // (Keep encodeMessage outside if it's pure, or define it here if needed)
+  // const encodeMessage = ...
 
   const handleLetterSelect = (letter: string) => {
     if (letter === ' ') return;
@@ -224,16 +364,7 @@ export function CipherDecoder() {
     setHoveredLetter(letter);
   };
 
-  const handleReplacementSelect = (letter: string) => {
-    // Safety check - ensure a rune is selected before allowing replacement
-    if (!selectedLetter) return;
-    
-    const newMapping = { ...mapping, [selectedLetter]: letter };
-    setMapping(newMapping);
-    setSelectedLetter(null);
-    
-    setTimeout(() => checkIfDecoded(newMapping), 100);
-  };
+  // (No changes needed for handleReplacementSelect as it's defined above)
 
   const handleNewMessage = () => {
     if (isDebugMode) {
@@ -309,36 +440,13 @@ export function CipherDecoder() {
     });
   };
   
-  const encodedMessage = encodeMessage(
-    currentMessage.text, 
-    currentMessage.shift, 
-    currentMessage.cipherType || 'caesar'
-  );
-  
-  const checkIfDecoded = (newMapping: Record<string, string>) => {
-    const uniqueCharsInMessage = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
-    const allCharsMapped = uniqueCharsInMessage.every(char => newMapping[char]);
-    
-    const originalWithoutSpaces = currentMessage.text.replace(/ /g, '');
-    const decodedWithNewMapping = encodedMessage
-      .split('')
-      .map(char => char === ' ' ? ' ' : newMapping[char] || char)
-      .join('')
-      .replace(/ /g, '');
-    
-    const correctlyDecoded = allCharsMapped && decodedWithNewMapping === originalWithoutSpaces;
-    
-    if (correctlyDecoded && !isDecoded) {
-      setIsDecoded(true);
-      triggerConfetti();
-      // Use the new notification instead of the green pop-up
-      triggerSecretUncoveredNotification();
-    }
-  };
+  // (checkIfDecoded is defined above)
 
   // Calculate the progress of decoding to determine color tint
   const getDecodeProgress = () => {
     const uniqueCharsInMessage = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
+    // Ensure uniqueCharsInMessage is not empty to avoid division by zero
+    if (uniqueCharsInMessage.length === 0) return 0;
     const mappedChars = uniqueCharsInMessage.filter(char => mapping[char]);
     return mappedChars.length / uniqueCharsInMessage.length;
   };
@@ -365,59 +473,7 @@ export function CipherDecoder() {
     '--mapped-glow': '0 0 8px rgba(99, 179, 237, 0.6)' // Fixed sky blue glow for mapped letters
   } as React.CSSProperties;
 
-  const triggerConfetti = () => {
-    if (confettiCanvasRef.current) {
-      const myConfetti = confetti.create(confettiCanvasRef.current, {
-        resize: true,
-        useWorker: true
-      });
-      
-      const end = Date.now() + 2000;
-      const colors = ['#1a365d', '#2c5282', '#2b6cb0', '#90cdf4', '#48bb78', '#9ae6b4'];
-      
-      (function frame() {
-        myConfetti({
-          particleCount: 2,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: colors
-        });
-        
-        myConfetti({
-          particleCount: 2,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: colors
-        });
-        
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      }());
-      
-      setTimeout(() => {
-        myConfetti({
-          particleCount: 150,
-          spread: 100,
-          origin: { y: 0.6 },
-          colors: colors
-        });
-      }, 1500);
-    }
-  };
-
-  // Function to trigger the "SECRET UNCOVERED" notification
-  const triggerSecretUncoveredNotification = () => {
-    setShowSecretUncovered(true);
-    
-    // Hide notification after 4 seconds
-    setTimeout(() => {
-      setShowSecretUncovered(false);
-    }, 4000);
-  };
-
+  // --- Render ---
   return (
     <>
       {isDebugMode && (
@@ -530,8 +586,8 @@ export function CipherDecoder() {
                         ${selectedLetter ? 'choose-me' : ''} 
                         ${isUsed ? 'used' : ''}`}
                       onClick={() => {
-                        // Only process click if a rune is selected and the letter isn't already used
-                        if (selectedLetter && !isUsed) {
+                        // Check moved to handleReplacementSelect, just call it if rune selected
+                        if (selectedLetter) {
                           handleReplacementSelect(letter);
                         }
                       }}

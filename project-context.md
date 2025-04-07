@@ -51,7 +51,7 @@ Secret Cipher Decoder/
    - Atbash cipher (reverse alphabet)
 3. **Interactive UI**:
    - Runic symbols represent encoded text
-   - Interactive letter mapping with visual feedback
+   - Interactive letter mapping with visual feedback (mouse clicks and keyboard input)
    - Progress tracking for decoding
 4. **Celebration Effects**: Confetti animation when a message is successfully decoded
 5. **Message Selection**: Users can select from various pre-defined messages or enter a specific message code
@@ -133,6 +133,7 @@ The user interface has been optimized for an intuitive and focused experience:
    - CSS variables for dynamic spacing
    - Mobile-specific optimizations
    - Element positions adjust proportionally on smaller screens
+   - Runic symbol font size is reduced on smaller screens to prevent overlap with other elements.
 
 ## User Flow
 
@@ -164,7 +165,8 @@ A dramatic full-screen notification that appears when a secret message is succes
 
 ### Visual Feedback
 The UI provides visual cues:
-- Highlighted letters when selected
+- Highlighted/hovered letters (runes) with an intensified pulsing glow, without changing size to prevent overlap
+- Selected letters (runes) with a gentler pulsing glow
 - Color-coded feedback on letter mapping
 - Progress indicator for decoding
 
