@@ -941,25 +941,23 @@ body, html {
 
 @media (max-width: 768px) {
   .message {
-    font-size: 1.5rem;
+    gap: 0.2rem 0.1rem;
   }
-  
   .letter {
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    font-size: 1.2rem;
-    margin: 0 0.25rem;
+    min-width: 1.2rem;
+    height: 1.8rem;
+    line-height: 1.8rem;
+    font-size: 1.1rem;
   }
-  
+
   [data-symbol-set="runic"] .letter:not(.mapped) {
-    font-size: 2.1rem;
+    font-size: 1.8rem;
   }
-  
+
   .letter.mapped {
-    font-size: 2.1rem;
+    min-width: 1.2rem;
   }
-  
+
   .action-buttons {
     position: relative;
     flex-direction: row;
