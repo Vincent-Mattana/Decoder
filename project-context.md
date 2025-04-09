@@ -55,8 +55,9 @@ Secret Cipher Decoder/
    - Progress tracking for decoding
 4. **Celebration Effects**: Confetti animation when a message is successfully decoded
 5. **Message Selection**: Users can select from various pre-defined messages or enter a specific message code
-6. **Secret Debug Mode**: Hidden feature activated by double-clicking the title
-7. **Dark Mode UI**: Modern dark-themed interface
+6. **Hint System**: Entering "HELP" code reveals one correct letter (styled distinctly in green). Does not reveal the last letter.
+7. **Secret Debug Mode**: Hidden feature activated by double-clicking the title
+8. **Dark Mode UI**: Modern dark-themed interface
 
 ## Data Models
 
@@ -81,6 +82,7 @@ export interface Message {
 The main component that handles the entire cipher decoding experience. It maintains state for:
 - Current message
 - Letter mapping selections
+- Hinted letter tracking
 - Decoding progress
 - UI interactions
 
@@ -147,6 +149,15 @@ The user interface has been optimized for an intuitive and focused experience:
 
 ## Special Features
 
+### Hint System ("HELP" Code)
+- Entering "HELP" reveals one random, correctly mapped but currently unsolved letter.
+- Revealed hints are styled in green for clear differentiation.
+- If only one letter remains unsolved, entering "HELP" shakes the input box instead of revealing the hint.
+
+### Shake Feedback
+- The code input box shakes if an invalid message code is entered.
+- The input box also shakes if "HELP" is entered when only one letter remains or if no hints are available.
+
 ### Secret Debug Mode
 A hidden feature activated by double-clicking the title which provides:
 - Direct decoding capabilities
@@ -158,28 +169,28 @@ Each message has a unique 4-character code (format: 2 letters + 2 numbers) that 
 
 ### Secret Uncovered Notification
 A dramatic full-screen notification that appears when a secret message is successfully decoded:
-- Large golden "SECRET UNCOVERED" text displayed center screen
-- Styled similar to game achievement notifications
-- Fades in and out over 4 seconds
-- Dark overlay to enhance visibility and dramatic effect
+- Large "SECRET UNCOVERED" text displayed center screen.
+- Styled with a gold color, drop shadow, and 'Cinzel Decorative' font reminiscent of Elden Ring victory text.
+- Fades in and out over 4 seconds against a semi-transparent dark overlay.
 
 ### Visual Feedback
 The UI provides visual cues:
-- Highlighted/hovered letters (runes) with an intensified pulsing glow, without changing size to prevent overlap
-- Selected letters (runes) with a gentler pulsing glow
-- Color-coded feedback on letter mapping
-- Progress indicator for decoding
+- Highlighted/hovered letters (runes) with an intensified pulsing glow.
+- Selected letters (runes) with a gentler pulsing glow.
+- Color-coded feedback on letter mapping (Blue for user-mapped, Green for hinted).
+- Progress indicator for decoding (subtle color shift in selection glow).
 
 ## Styling Details
 
 The application uses a dark-themed UI with:
-- Dark background (#121212)
-- Glowing text effects using text-shadow
-- Runic symbols for encrypted text (2.25rem size)
-- Doubled space width between words (1rem) for better message readability
-- Fixed positioning for control elements
-- CSS variables for dynamic spacing and responsive adjustments
-- Interactive elements with hover and focus effects
+- Dark background (#1a1a1a).
+- Glowing text effects using text-shadow.
+- Runic symbols for encrypted text (2.25rem size).
+- Distinct styling for mapped (blue) and hinted (green) letters for clarity.
+- Elden Ring-inspired font and styling for the "SECRET UNCOVERED" notification.
+- Fixed positioning for control elements and keyboard.
+- CSS variables for dynamic spacing and responsive adjustments.
+- Interactive elements with hover and focus effects.
 
 ## Deployment
 
@@ -192,7 +203,7 @@ The project is configured for deployment to GitHub Pages using:
 1. Additional cipher types (Vigenère, Substitution, etc.)
 2. User-created messages
 3. Timed challenges or difficulty levels
-4. Hint system for challenging decryptions
+4. Hint system for challenging decryptions (e.g., revealing most frequent letter)
 5. Multiplayer or collaborative decoding
-6. Mobile-specific optimizations
+6. Mobile-specific optimizations (further refinements)
 7. Sound effects and additional animations 

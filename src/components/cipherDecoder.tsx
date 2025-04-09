@@ -200,6 +200,7 @@ export function CipherDecoder() {
   });
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [hintedSymbols, setHintedSymbols] = useState<Record<string, string>>({});
   const [isDecoded, setIsDecoded] = useState(false);
   const [firstInteraction, setFirstInteraction] = useState(true);
   const [hoveredLetter, setHoveredLetter] = useState<string | null>(null);
@@ -375,6 +376,15 @@ export function CipherDecoder() {
       const newMapping = { ...mapping };
       delete newMapping[letter];
       setMapping(newMapping);
+
+      // Also remove from hinted symbols if it was a hint
+      if (hintedSymbols[letter]) {
+        setHintedSymbols(prev => {
+          const newHints = { ...prev };
+          delete newHints[letter];
+          return newHints;
+        });
+      }
       
       // Check if decoding state has changed
       if (isDecoded) {
@@ -405,9 +415,10 @@ export function CipherDecoder() {
     // Clear any selected letter to prevent issues when switching messages
     setSelectedLetter(null);
     
-    const nextIndex = (messages.findIndex(m => m.id === currentMessage.id) + 1) % messages.length;
-    setCurrentMessage(messages[nextIndex]);
+    const newMessageIndex = (messages.findIndex(msg => msg.id === currentMessage.id) + 1) % messages.length;
+    setCurrentMessage(messages[newMessageIndex]);
     setMapping({});
+    setHintedSymbols({}); // Clear hinted symbols record
     setIsDecoded(false);
     setCodeInputValue('');
   };
@@ -447,6 +458,8 @@ export function CipherDecoder() {
 
         // Update the mapping state with the hint
         setMapping(prev => ({ ...prev, [hintSymbol]: hintLetter }));
+        // Add the symbol-letter pair to the hinted record
+        setHintedSymbols(prev => ({ ...prev, [hintSymbol]: hintLetter }));
 
         // Optional: Provide feedback (e.g., console log or UI element)
         console.log(`Hint revealed: ${hintSymbol} -> ${hintLetter}`);
@@ -473,6 +486,7 @@ export function CipherDecoder() {
     if (foundMessage) {
       setCurrentMessage(foundMessage);
       setMapping({});
+      setHintedSymbols({}); // Clear hinted symbols record
       setIsDecoded(false);
       setSelectedLetter(null);
       setCodeInputValue('');
@@ -515,6 +529,7 @@ export function CipherDecoder() {
     // Clear any selected letter when resetting
     setSelectedLetter(null);
     setMapping({});
+    setHintedSymbols({}); // Clear hinted symbols record
     setIsDecoded(false);
   };
   
@@ -631,6 +646,7 @@ export function CipherDecoder() {
                             ${selectedLetter === char ? 'selected' : ''} 
                             ${mapping[char] ? 'mapped' : ''} 
                             ${(hoveredLetter === char || selectedLetter === char) ? 'highlight' : ''}
+                            ${mapping[char] && hintedSymbols[char] === mapping[char] ? 'hinted' : ''}
                             ${firstInteraction && char !== ' ' ? 'pulse-hint' : ''}`}
                           onClick={() => handleLetterSelect(char)}
                           onMouseEnter={() => handleLetterHover(char)}

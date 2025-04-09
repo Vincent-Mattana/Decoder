@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap');
 
 /* Base styles */
 body, html {
@@ -308,6 +309,14 @@ body, html {
   background-color: #1a365d;
   border-color: var(--mapped-color);
   cursor: pointer;
+}
+
+/* Style for letters revealed by the HELP hint */
+.letter.mapped.hinted {
+  color: #48bb78 !important; /* Green color (keep text bright) */
+  background-color: #1c4532; /* Even darker green background */
+  border-color: #48bb78; /* Green border */
+  text-shadow: 0 0 12px rgba(72, 187, 120, 0.9); /* More pronounced green glow */
 }
 
 .letter.highlight {
@@ -708,46 +717,60 @@ body, html {
 /* SECRET UNCOVERED notification */
 .secret-uncovered-notification {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .secret-uncovered-notification.show {
   opacity: 1;
-  animation: fadeInOut 4s ease-in-out;
+  pointer-events: auto;
 }
 
-.secret-uncovered-text {
-  font-size: 4rem;
-  font-weight: bold;
-  color: #FFD700;
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-  text-align: center;
-  z-index: 1001;
-  letter-spacing: 2px;
-}
-
-/* Secret overlay */
 .secret-uncovered-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: -1;
-  pointer-events: none;
-  animation: overlayFade 4s ease-in-out;
+  transition: none;
+}
+
+.secret-uncovered-text {
+  position: relative;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #D4AF37; /* Elden Ring Gold */
+  /* Stacked shadows for depth and effect */
+  text-shadow: 
+    /* Subtle inner highlight (top edge) */
+    0px -1px 1px rgba(255, 255, 220, 0.2), 
+    /* Main dark drop shadow (down-right) */
+    3px 3px 4px rgba(0, 0, 0, 0.7),
+    /* Soft outer dark glow */
+    0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  animation: fadeInOut 4s ease-in-out forwards;
+  letter-spacing: 0.3rem; /* Slightly more spacing */
+  text-align: center;
+  line-height: 1.2;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: scale(0.9); } /* Start slightly smaller */
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9); } /* End slightly smaller */
 }
 
 /* Animations */
@@ -766,20 +789,6 @@ body, html {
   100% {
     transform: translate(-50%, -50%) rotate(-25deg) scale(1);
   }
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-  10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
-}
-
-@keyframes overlayFade {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 @keyframes pulse {
