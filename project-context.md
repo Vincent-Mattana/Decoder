@@ -53,7 +53,7 @@ Secret Cipher Decoder/
    - Runic symbols represent encoded text
    - Interactive letter mapping with visual feedback (mouse clicks and keyboard input)
    - Progress tracking for decoding
-4. **Celebration Effects**: Confetti animation when a message is successfully decoded
+4. **Celebration Effects**: Confetti animation when a message is successfully decoded, triggered after the 'SECRET UNCOVERED' notification.
 5. **Message Selection**: Users can select from various pre-defined messages or enter a specific message code
 6. **Hint System**: Entering "HELP" code reveals one correct letter (styled distinctly in green). Does not reveal the last letter.
 7. **Secret Debug Mode**: Hidden feature activated by double-clicking the title
@@ -155,7 +155,7 @@ The user interface has been optimized for an intuitive and focused experience:
 - If only one letter remains unsolved, entering "HELP" shakes the input box instead of revealing the hint.
 
 ### Shake Feedback
-- The code input box shakes if an invalid message code is entered.
+- The code input box shakes if an invalid message code is entered (regardless of input length).
 - The input box also shakes if "HELP" is entered when only one letter remains or if no hints are available.
 
 ### Secret Debug Mode
@@ -172,6 +172,7 @@ A dramatic full-screen notification that appears when a secret message is succes
 - Large "SECRET UNCOVERED" text displayed center screen.
 - Styled with a gold color, drop shadow, and 'Cinzel Decorative' font reminiscent of Elden Ring victory text.
 - Fades in and out over 4 seconds against a semi-transparent dark overlay.
+- The confetti celebration starts *after* this notification finishes.
 
 ### Visual Feedback
 The UI provides visual cues:

@@ -272,8 +272,9 @@ export function CipherDecoder() {
     setShowSecretUncovered(true);
     setTimeout(() => {
       setShowSecretUncovered(false);
+      triggerConfetti(); // Trigger confetti after notification hides
     }, 4000);
-  }, []); // setShowSecretUncovered is stable
+  }, [triggerConfetti]); // Added triggerConfetti dependency
 
   // Memoize decoding check function
   const checkIfDecoded = useCallback((newMapping: Record<string, string>) => {
@@ -293,10 +294,11 @@ export function CipherDecoder() {
 
     if (correctlyDecoded && !isDecoded) {
       setIsDecoded(true);
-      triggerConfetti();
+      // triggerConfetti(); // Removed: Confetti now triggered after notification
       triggerSecretUncoveredNotification();
     }
-  }, [encodedMessage, currentMessage.text, isDecoded, triggerConfetti, triggerSecretUncoveredNotification, setIsDecoded]); // Added stable setIsDecoded dependency
+    // Removed triggerConfetti from dependencies
+  }, [encodedMessage, currentMessage.text, isDecoded, triggerSecretUncoveredNotification, setIsDecoded]); 
 
   // Memoize replacement handler
   const handleReplacementSelect = useCallback((letter: string) => {
@@ -508,8 +510,8 @@ export function CipherDecoder() {
   };
 
   const handleCodeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // If Enter key is pressed and the code input is valid, load the message
-    if (e.key === 'Enter' && codeInputValue.length === 4) {
+    // If Enter key is pressed, load the message (validation happens in handleLoadMessageByCode)
+    if (e.key === 'Enter') {
       handleLoadMessageByCode();
     }
   };
