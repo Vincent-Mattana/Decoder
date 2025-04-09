@@ -44,6 +44,36 @@ const encodeMessage = (text: string, shift: number, type: CipherType = 'caesar')
       .join('');
   };
 
+// Function to determine the correct mapping for a message
+const getCorrectMapping = (message: typeof ALL_MESSAGES[0]): Record<string, string> => {
+  const correctMap: Record<string, string> = {};
+  const text = message.text;
+  const shift = message.shift;
+  const type = message.cipherType || 'caesar';
+  const symbolAlphabet = SYMBOL_SETS.runic;
+
+  for (let i = 0; i < text.length; i++) {
+    const plainChar = text[i];
+    if (plainChar === ' ') continue; // Skip spaces
+
+    const index = ALPHABET.indexOf(plainChar);
+    if (index === -1) continue; // Skip non-alphabetic characters
+
+    let encodedChar: string;
+    if (type === 'atbash') {
+      encodedChar = symbolAlphabet[25 - index] || SYMBOL_SETS.standard[25 - index];
+    } else { // Caesar
+      encodedChar = symbolAlphabet[(index + shift) % 26] || SYMBOL_SETS.standard[(index + shift) % 26];
+    }
+
+    // Add mapping if not already present (ensures unique symbols)
+    if (!(encodedChar in correctMap)) {
+      correctMap[encodedChar] = plainChar;
+    }
+  }
+  return correctMap;
+};
+
 // Debug message for secret mode
 const DEBUG_MESSAGE = {
   id: 999,
@@ -383,7 +413,63 @@ export function CipherDecoder() {
   };
 
   const handleLoadMessageByCode = () => {
-    const foundMessage = messages.find(m => m.code?.toUpperCase() === codeInputValue.toUpperCase());
+    const code = codeInputValue.trim().toUpperCase();
+    setCodeInputValue(''); // Clear input immediately
+
+    if (code === 'HELP') {
+      const correctMapping = getCorrectMapping(currentMessage);
+      const uniqueEncodedChars = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
+
+      // Find symbols that are in the correct mapping but not yet correctly mapped by the user
+      const unmappedSymbols = uniqueEncodedChars.filter(symbol => 
+        correctMapping[symbol] !== undefined &&
+        mapping[symbol] !== correctMapping[symbol]
+      );
+
+      // If only one symbol remains unmapped, shake the input instead of revealing
+      if (unmappedSymbols.length === 1) {
+        if (codeInputRef.current) {
+          codeInputRef.current.classList.add('shake');
+          setTimeout(() => {
+            codeInputRef.current?.classList.remove('shake');
+          }, 500); // Match animation duration
+        }
+        console.log("Only one letter left! Try to solve it yourself.");
+        setIsCodeVisible(false); // Still close the modal
+        return; // Stop execution, don't reveal the last letter
+      }
+      
+      if (unmappedSymbols.length > 0) {
+        // Pick a random unmapped symbol
+        const randomIndex = Math.floor(Math.random() * unmappedSymbols.length);
+        const hintSymbol = unmappedSymbols[randomIndex];
+        const hintLetter = correctMapping[hintSymbol];
+
+        // Update the mapping state with the hint
+        setMapping(prev => ({ ...prev, [hintSymbol]: hintLetter }));
+
+        // Optional: Provide feedback (e.g., console log or UI element)
+        console.log(`Hint revealed: ${hintSymbol} -> ${hintLetter}`);
+        
+        // Close the code input modal after revealing the hint
+        setIsCodeVisible(false); 
+        
+      } else {
+        // Optional: Handle case where all letters are already mapped (correctly or incorrectly)
+        console.log("No more hints available or message already solved/mapped.");
+        // Shake if no hints available?
+        if (codeInputRef.current) {
+          codeInputRef.current.classList.add('shake');
+          setTimeout(() => {
+            codeInputRef.current?.classList.remove('shake');
+          }, 500);
+        }
+        setIsCodeVisible(false); // Still close the modal
+      }
+      return; // Stop execution for HELP code
+    }
+
+    const foundMessage = messages.find(m => m.code === code);
     if (foundMessage) {
       setCurrentMessage(foundMessage);
       setMapping({});
@@ -391,7 +477,14 @@ export function CipherDecoder() {
       setSelectedLetter(null);
       setCodeInputValue('');
     } else {
-      alert('Invalid code. Please try again.');
+      // Shake the input if the code is invalid
+      if (codeInputRef.current) {
+        codeInputRef.current.classList.add('shake');
+        setTimeout(() => {
+          codeInputRef.current?.classList.remove('shake');
+        }, 500); // Match animation duration
+      }
+      console.log("Invalid message code entered."); // Optional feedback
     }
   };
 
