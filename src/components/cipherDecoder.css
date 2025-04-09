@@ -464,14 +464,12 @@ body, html {
 
 .alphabet {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   justify-content: center;
-  flex: 0 1 auto;
+  flex-wrap: wrap;
+  padding: var(--alphabet-padding-y) var(--alphabet-padding-x);
+  order: 2;
   max-width: 650px;
   margin: 0 auto;
-  padding: 0.25rem;
-  order: 2;
 }
 
 /* Letter buttons in the alphabet */
@@ -724,14 +722,17 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  pointer-events: none;
+  z-index: 2000;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+  pointer-events: none;
 }
 
 .secret-uncovered-notification.show {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease-in-out;
   pointer-events: auto;
 }
 
@@ -741,36 +742,27 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  transition: none;
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
 .secret-uncovered-text {
   position: relative;
+  margin: auto;
+  color: gold;
   font-family: 'Cinzel Decorative', serif;
-  font-size: 4.5rem;
-  font-weight: 700;
-  color: #D4AF37; /* Elden Ring Gold */
-  /* Stacked shadows for depth and effect */
-  text-shadow: 
-    /* Subtle inner highlight (top edge) */
-    0px -1px 1px rgba(255, 255, 220, 0.2), 
-    /* Main dark drop shadow (down-right) */
-    3px 3px 4px rgba(0, 0, 0, 0.7),
-    /* Soft outer dark glow */
-    0 0 10px rgba(0, 0, 0, 0.3);
-  z-index: 1001;
-  animation: fadeInOut 4s ease-in-out forwards;
-  letter-spacing: 0.3rem; /* Slightly more spacing */
+  font-size: 4rem;
+  font-weight: bold;
   text-align: center;
-  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  animation: fadeInOutNotification 4s ease-in-out forwards;
+  z-index: 2001;
 }
 
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: scale(0.9); } /* Start slightly smaller */
-  20% { opacity: 1; transform: scale(1); }
-  80% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.9); } /* End slightly smaller */
+@keyframes fadeInOutNotification {
+  0% { opacity: 0; transform: scale(0.9); }
+  12.5% { opacity: 1; transform: scale(1); }
+  87.5% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.95); }
 }
 
 /* Animations */
@@ -1124,4 +1116,31 @@ body, html {
 .action-buttons.top-buttons.left-side,
 .action-buttons.top-buttons.right-side {
   display: none;
+}
+
+/* Clue Box Styling */
+.clue-box {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(50, 50, 50, 0.9);
+  color: #e0e0e0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #666;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  opacity: 0;
+  animation: fadeInOut 4s ease-in-out forwards;
+}
+
+/* Fade In/Out Animation */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 10px); }
+  12.5% { opacity: 1; transform: translate(-50%, 0); }
+  87.5% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
 } 

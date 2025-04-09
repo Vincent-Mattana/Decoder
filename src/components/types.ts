@@ -6,4 +6,5 @@ export interface Message {
   shift: number;
   cipherType: CipherType;
   code?: string; // Optional unique code for message selection
+  clue?: string; // Optional cryptic clue for the message
 } 

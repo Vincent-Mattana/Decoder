@@ -210,6 +210,9 @@ export function CipherDecoder() {
   const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [showSecretUncovered, setShowSecretUncovered] = useState(false);
   const codeInputRef = useRef<HTMLInputElement>(null);
+  const [showClueBox, setShowClueBox] = useState(false);
+  const [clueText, setClueText] = useState('');
+  const clueTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Memoized Values & Callbacks (Define BEFORE effects that use them) ---
 
@@ -427,60 +430,14 @@ export function CipherDecoder() {
 
   const handleLoadMessageByCode = () => {
     const code = codeInputValue.trim().toUpperCase();
-    setCodeInputValue(''); // Clear input immediately
+    // NOTE: Clue logic is now handled in handleCodeInputKeyDown
+    // NOTE: HELP logic should be handled preferably in handleCodeInputKeyDown too for consistency
+    //       or refactored into a separate function called by both handlers if needed.
+    //       Keeping HELP here for now to minimize changes, but consider refactoring.
 
     if (code === 'HELP') {
-      const correctMapping = getCorrectMapping(currentMessage);
-      const uniqueEncodedChars = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
-
-      // Find symbols that are in the correct mapping but not yet correctly mapped by the user
-      const unmappedSymbols = uniqueEncodedChars.filter(symbol => 
-        correctMapping[symbol] !== undefined &&
-        mapping[symbol] !== correctMapping[symbol]
-      );
-
-      // If only one symbol remains unmapped, shake the input instead of revealing
-      if (unmappedSymbols.length === 1) {
-        if (codeInputRef.current) {
-          codeInputRef.current.classList.add('shake');
-          setTimeout(() => {
-            codeInputRef.current?.classList.remove('shake');
-          }, 500); // Match animation duration
-        }
-        console.log("Only one letter left! Try to solve it yourself.");
-        setIsCodeVisible(false); // Still close the modal
-        return; // Stop execution, don't reveal the last letter
-      }
-      
-      if (unmappedSymbols.length > 0) {
-        // Pick a random unmapped symbol
-        const randomIndex = Math.floor(Math.random() * unmappedSymbols.length);
-        const hintSymbol = unmappedSymbols[randomIndex];
-        const hintLetter = correctMapping[hintSymbol];
-
-        // Update the mapping state with the hint
-        setMapping(prev => ({ ...prev, [hintSymbol]: hintLetter }));
-        // Add the symbol-letter pair to the hinted record
-        setHintedSymbols(prev => ({ ...prev, [hintSymbol]: hintLetter }));
-
-        // Optional: Provide feedback (e.g., console log or UI element)
-        console.log(`Hint revealed: ${hintSymbol} -> ${hintLetter}`);
-        
-        // Close the code input modal after revealing the hint
-        setIsCodeVisible(false); 
-        
-      } else {
-        // Optional: Handle case where all letters are already mapped (correctly or incorrectly)
-        console.log("No more hints available or message already solved/mapped.");
-        // Shake if no hints available?
-        if (codeInputRef.current) {
-          codeInputRef.current.classList.add('shake');
-          setTimeout(() => {
-            codeInputRef.current?.classList.remove('shake');
-          }, 500);
-        }
-        setIsCodeVisible(false); // Still close the modal
-      }
+      handleHelpRequest(); // Call the dedicated HELP function
+      setCodeInputValue(''); // Clear input after handling HELP
       return; // Stop execution for HELP code
     }
 
@@ -505,14 +462,102 @@ export function CipherDecoder() {
   };
 
   const handleCodeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert to uppercase and store
-    setCodeInputValue(e.target.value.toUpperCase());
+    const newValue = e.target.value.toUpperCase();
+    setCodeInputValue(newValue); // Update state immediately
+
+    // --- CLUE logic removed from here ---
+    // The clue will now be shown only when Enter is pressed in handleCodeInputKeyDown
+    // -----------------------------------
+
+    // Reset shake effect if user types something else while input is active
+    if (codeInputRef.current?.classList.contains('shake')) {
+      codeInputRef.current.classList.remove('shake');
+    }
   };
 
   const handleCodeInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // If Enter key is pressed, load the message (validation happens in handleLoadMessageByCode)
     if (e.key === 'Enter') {
-      handleLoadMessageByCode();
+      const code = codeInputValue.trim().toUpperCase();
+
+      if (code === 'CLUE') {
+        // --- Handle CLUE command on Enter --- 
+        // Clear any existing timeout
+        if (clueTimeoutRef.current) {
+          clearTimeout(clueTimeoutRef.current);
+        }
+        // Get the clue from the current message data
+        const generatedClue = currentMessage.clue || "No clue available for this message.";
+        setClueText(generatedClue); 
+        setShowClueBox(true);
+        // Set timeout to hide the clue box after 4 seconds
+        clueTimeoutRef.current = setTimeout(() => {
+          setShowClueBox(false);
+          clueTimeoutRef.current = null; 
+        }, 4000);
+        // Clear the input field after showing clue
+        setCodeInputValue(''); 
+        // ------------------------------------
+      } else if (code === 'HELP') {
+          // Handle HELP command on Enter
+          handleHelpRequest(); 
+          setCodeInputValue(''); // Clear input
+      } else {
+        // If not CLUE or HELP, attempt to load message by code
+        handleLoadMessageByCode();
+      }
+    }
+  };
+
+  // Extracted HELP logic into its own function
+  const handleHelpRequest = () => {
+    const correctMapping = getCorrectMapping(currentMessage);
+    const uniqueEncodedChars = Array.from(new Set(encodedMessage.replace(/ /g, '').split('')));
+
+    // Find symbols that are in the correct mapping but not yet correctly mapped by the user OR incorrectly mapped
+    const unmappedOrIncorrectSymbols = uniqueEncodedChars.filter(symbol => 
+      correctMapping[symbol] !== undefined &&
+      (!mapping[symbol] || mapping[symbol] !== correctMapping[symbol]) && // Not mapped or mapped incorrectly
+      !hintedSymbols[symbol] // And not already revealed as a hint
+    );
+
+    // If only one symbol remains unsolved (and not already hinted), shake
+    if (unmappedOrIncorrectSymbols.length === 1) {
+      if (codeInputRef.current) {
+        codeInputRef.current.classList.add('shake');
+        setTimeout(() => {
+          codeInputRef.current?.classList.remove('shake');
+        }, 500);
+      }
+      console.log("Only one letter left! Try to solve it yourself.");
+      // Don't close the code input modal if it was open
+      return;
+    }
+      
+    if (unmappedOrIncorrectSymbols.length > 0) {
+      // Pick a random unmapped/incorrect symbol
+      const randomIndex = Math.floor(Math.random() * unmappedOrIncorrectSymbols.length);
+      const hintSymbol = unmappedOrIncorrectSymbols[randomIndex];
+      const hintLetter = correctMapping[hintSymbol];
+
+      // Update the mapping state with the hint
+      setMapping(prev => ({ ...prev, [hintSymbol]: hintLetter }));
+      // Add the symbol-letter pair to the hinted record
+      setHintedSymbols(prev => ({ ...prev, [hintSymbol]: hintLetter }));
+
+      console.log(`Hint revealed: ${hintSymbol} -> ${hintLetter}`);
+      // Check if decoded after applying hint
+      setTimeout(() => checkIfDecoded({ ...mapping, [hintSymbol]: hintLetter }), 100);
+      // Don't close the code input modal here, let the caller handle it if needed
+        
+    } else {
+      console.log("No more hints available or message already solved/mapped.");
+      // Shake if no hints available
+      if (codeInputRef.current) {
+        codeInputRef.current.classList.add('shake');
+        setTimeout(() => {
+          codeInputRef.current?.classList.remove('shake');
+        }, 500);
+      }
     }
   };
 
@@ -582,6 +627,15 @@ export function CipherDecoder() {
     '--mapped-color': '#63b3ed', // Fixed sky blue for mapped letters
     '--mapped-glow': '0 0 8px rgba(99, 179, 237, 0.6)' // Fixed sky blue glow for mapped letters
   } as React.CSSProperties;
+
+  // Cleanup timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (clueTimeoutRef.current) {
+        clearTimeout(clueTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // --- Render ---
   return (
@@ -721,6 +775,13 @@ export function CipherDecoder() {
           
         </div>
       </div>
+
+      {/* Conditionally render the clue box */}
+      {showClueBox && (
+        <div className="clue-box">
+          {clueText}
+        </div>
+      )}
     </>
   );
 } 
