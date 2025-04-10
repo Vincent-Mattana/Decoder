@@ -628,6 +628,15 @@ body, html {
   outline: none;
 }
 
+/* New container for input and icon */
+.input-with-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Spacing between input and icon */
+  margin-bottom: 0.5rem; /* Spacing below the container */
+  position: relative; /* Positioning context for children if needed */
+}
+
 .code-input.permanent {
   width: 110px;
   min-width: 110px;
@@ -643,7 +652,6 @@ body, html {
   height: 38px;
   text-align: center;
   margin-top: 0;
-  margin-bottom: 0.5rem;
   color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -1060,14 +1068,18 @@ body, html {
     margin-left: 0.5rem;
   }
 
+  /* Adjustments for the new container on smaller screens */
+  .input-with-icon-container {
+    /* Maintain flex layout */
+  }
+
   .code-input.permanent {
     width: auto;
     min-width: 80px;
     max-width: 120px;
     margin-left: 0;
-    margin-right: 0.5rem;
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 0; /* Remove bottom margin here too */
     height: 34px;
     font-size: 0.9em;
     padding: 0.3rem 0.5rem;

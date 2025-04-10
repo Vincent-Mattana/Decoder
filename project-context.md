@@ -113,12 +113,13 @@ The user interface has been optimized for an intuitive and focused experience:
 1. **Top Section**:
    - Title "Decoder" is centered at the top
    - Control buttons are positioned in the corners
-   - "Reset" and "Enter Code" buttons in the top-left corner
+   - "Reset" button moved to the bottom section
+   - "Enter Code" input field moved to the bottom section
    - "Next Message" button in the top-right corner
 
 2. **Middle Section**:
    - "Secret Message:" title is centered horizontally at the top of the message container
-   - Message code eye emoji appears inline directly next to the title for easy access
+   - Message code display mechanism moved to the bottom section
    - Secret message container is precisely positioned at 45% from the top of the viewport, creating perfect vertical alignment between the title and keyboard
    - Message uses large runic symbols (2.25rem font size) for better visibility
    - Gray background fits tightly around the message content
@@ -128,6 +129,9 @@ The user interface has been optimized for an intuitive and focused experience:
 3. **Bottom Section**:
    - Alphabet keyboard is fixed to the bottom of the screen
    - Used for selecting letters to decode the message
+   - Contains control elements integrated into the layout:
+     - Left side: "Enter code..." input field with an adjacent label icon (🏷️) to reveal/hide the message code (tooltip: "The unique code for this secret message."), and the "Reset" button.
+     - Right side: (No button currently, was previously "Next Message")
    - Consistent position across all screen sizes with responsive padding adjustments
 
 4. **Responsive Design**:
